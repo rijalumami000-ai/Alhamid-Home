@@ -79,6 +79,9 @@ cd $APP_DIR/backend
 if [ -f "server_linux" ]; then
     chmod +x server_linux
     cp -f server_linux server
+elif command -v go &> /dev/null; then
+    echo -e "${YELLOW}Mengompilasi Go binary di server...${NC}"
+    go build -o server ./cmd/server
 fi
 chmod +x $APP_DIR/backend/server
 
