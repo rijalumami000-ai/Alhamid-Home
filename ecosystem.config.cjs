@@ -30,7 +30,8 @@ module.exports = {
         NODE_ENV: 'production',
         PORT: 3005,
         HOST: '127.0.0.1',
-        ORIGIN: 'https://alhamidcintamulya.com'
+        ORIGIN: 'https://alhamidcintamulya.com',
+        NODE_OPTIONS: '--require /var/www/alhamidcintamulya.com/frontend/polyfill.cjs'
       },
       error_file: '/var/www/alhamidcintamulya.com/logs/frontend-error.log',
       out_file: '/var/www/alhamidcintamulya.com/logs/frontend-out.log',
