@@ -2,6 +2,10 @@ import { writable } from 'svelte/store';
 import { api } from '$lib/api';
 
 export const defaultSettings: Record<string, string> = {
+  header_brand_title: 'AL-HAMID',
+  header_brand_subtitle: 'Pesantren & Academy • Cintamulya',
+  header_brand_initials: 'AH',
+  header_brand_logo_url: '',
   site_name: 'Pondok Pesantren Al-Hamid',
   site_tagline: 'Meneguhkan Sanad Keilmuan, Mengintegrasikan Karakter, Membangun Generasi Emas',
   site_description: 'Lembaga pendidikan Islam kontemporer yang memadukan tradisi sanad kitab kuning (turats) dengan keunggulan sains, riset madrasah, dan rekayasa teknologi komputasi modern.',
@@ -10,6 +14,8 @@ export const defaultSettings: Record<string, string> = {
   site_whatsapp: '6281234567890',
   site_address: 'Jl. Pesantren Al-Hamid No. 01, Cintamulya, Candipuro, Lampung Selatan, Lampung 35356',
   site_maps: 'https://maps.google.com/?q=Pondok+Pesantren+Al-Hamid',
+  site_maps_embed: '',
+  site_office_hours: 'Setiap Hari: 08.00 – 16.30 WIB',
   social_instagram: 'https://instagram.com',
   social_youtube: 'https://youtube.com',
   social_facebook: 'https://facebook.com',
@@ -40,3 +46,4 @@ export async function initSettings(): Promise<void> {
 export function updateLocalSettings(newSettings: Record<string, string>) {
   siteSettings.update((prev) => ({ ...prev, ...newSettings }));
 }
+

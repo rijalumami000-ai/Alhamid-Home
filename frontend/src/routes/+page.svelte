@@ -281,9 +281,6 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-8">
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
       <div class="space-y-3">
-        <p class="text-xs font-mono uppercase tracking-[0.25em] font-bold text-teal-700">
-          Ekosistem Pendidikan
-        </p>
         <h2 class="font-display font-black text-3xl sm:text-5xl text-slate-950 tracking-tight">
           Jenjang Formal & Non-Formal Terpadu
         </h2>
@@ -307,17 +304,11 @@
               />
               <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent"></div>
               
-              <div class="absolute top-4 left-4 right-4 flex items-center justify-between">
-                <span class="text-[11px] font-mono font-bold tracking-wider uppercase text-white drop-shadow">
-                  {unit.type === 'formal' ? 'Pendidikan Formal' : 'Non-Formal'}
+              <div class="absolute bottom-3 left-4 right-4 flex items-center justify-between">
+                <span class="text-white text-xs font-medium opacity-90 line-clamp-1">{unit.tagline}</span>
+                <span class="text-[11px] font-mono text-teal-300 shrink-0 uppercase tracking-wider">
+                  {unit.type === 'formal' ? 'Formal' : 'Non-Formal'}
                 </span>
-                {#if unit.badge}
-                  <span class="text-teal-300 text-xs font-mono font-medium drop-shadow">{unit.badge}</span>
-                {/if}
-              </div>
-
-              <div class="absolute bottom-3 left-4 right-4">
-                <span class="text-white text-xs font-medium opacity-90">{unit.tagline}</span>
               </div>
             </div>
 

@@ -452,7 +452,7 @@ func (h *AdminHandler) DeleteAlumni(c *fiber.Ctx) error {
 // ---------------- MEDIA PHOTOS & VIDEOS ----------------
 func (h *AdminHandler) GetPhotos(c *fiber.Ctx) error {
 	var list []models.MediaPhoto
-	database.DB.Preload("Category").Order("id DESC").Find(&list)
+	database.DB.Preload("Category").Order("\"order\" ASC, id DESC").Find(&list)
 	return c.JSON(list)
 }
 
@@ -467,6 +467,21 @@ func (h *AdminHandler) CreatePhoto(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(item)
 }
 
+func (h *AdminHandler) UpdatePhoto(c *fiber.Ctx) error {
+	id := c.Params("id")
+	var item models.MediaPhoto
+	if err := database.DB.First(&item, id).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Foto tidak ditemukan"})
+	}
+	if err := c.BodyParser(&item); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Format data tidak valid"})
+	}
+	item.ImageUrl = normalizeGoogleDriveURL(item.ImageUrl)
+	database.DB.Save(&item)
+	database.DB.Preload("Category").First(&item, item.ID)
+	return c.JSON(item)
+}
+
 func (h *AdminHandler) DeletePhoto(c *fiber.Ctx) error {
 	id := c.Params("id")
 	database.DB.Delete(&models.MediaPhoto{}, id)
@@ -475,7 +490,7 @@ func (h *AdminHandler) DeletePhoto(c *fiber.Ctx) error {
 
 func (h *AdminHandler) GetVideos(c *fiber.Ctx) error {
 	var list []models.MediaVideo
-	database.DB.Preload("Category").Order("id DESC").Find(&list)
+	database.DB.Preload("Category").Order("\"order\" ASC, id DESC").Find(&list)
 	return c.JSON(list)
 }
 
@@ -497,6 +512,29 @@ func (h *AdminHandler) CreateVideo(c *fiber.Ctx) error {
 	database.DB.Create(&item)
 	database.DB.Preload("Category").First(&item, item.ID)
 	return c.Status(fiber.StatusCreated).JSON(item)
+}
+
+func (h *AdminHandler) UpdateVideo(c *fiber.Ctx) error {
+	id := c.Params("id")
+	var item models.MediaVideo
+	if err := database.DB.First(&item, id).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Video tidak ditemukan"})
+	}
+	if err := c.BodyParser(&item); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Format data tidak valid"})
+	}
+
+	if item.YoutubeUrl != "" {
+		re := regexp.MustCompile(`(?:v=|\/)([0-9A-Za-z_-]{11}).*`)
+		matches := re.FindStringSubmatch(item.YoutubeUrl)
+		if len(matches) > 1 {
+			item.YoutubeId = matches[1]
+		}
+	}
+
+	database.DB.Save(&item)
+	database.DB.Preload("Category").First(&item, item.ID)
+	return c.JSON(item)
 }
 
 func (h *AdminHandler) DeleteVideo(c *fiber.Ctx) error {

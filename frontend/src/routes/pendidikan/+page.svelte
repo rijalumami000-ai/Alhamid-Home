@@ -30,9 +30,6 @@
   <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-teal-500/15 blur-3xl pointer-events-none rounded-full"></div>
 
   <div class="max-w-6xl mx-auto space-y-4 relative z-10">
-    <p class="text-xs font-mono uppercase tracking-[0.25em] font-semibold text-teal-400">
-      Akademik & Kurikulum
-    </p>
     <h1 class="font-display font-black text-3xl sm:text-5xl lg:text-6xl text-white tracking-tight">
       Ekosistem Pendidikan Al-Hamid
     </h1>
@@ -82,14 +79,11 @@
             class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
           />
           <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent"></div>
-          <div class="absolute top-4 left-4 right-4 flex items-center justify-between">
-            <span class="px-3 py-1 rounded-full text-[10px] font-black tracking-wider uppercase shadow-md {unit.type === 'formal' ? 'bg-indigo-600 text-white' : 'bg-teal-600 text-white'}">
-              {unit.type === 'formal' ? 'Pendidikan Formal' : 'Pendidikan Non-Formal'}
+          <div class="absolute bottom-3 left-4 right-4 flex items-center justify-between">
+            <span class="text-white/90 text-xs font-medium line-clamp-1">{unit.tagline}</span>
+            <span class="text-[11px] font-medium text-teal-300 font-mono shrink-0">
+              {unit.type === 'formal' ? 'Formal' : 'Non-Formal'}
             </span>
-            <span class="text-amber-300 text-xs font-bold drop-shadow">{unit.badge}</span>
-          </div>
-          <div class="absolute bottom-3 left-4 right-4">
-            <span class="text-white text-xs font-medium opacity-90">{unit.tagline}</span>
           </div>
         </div>
 

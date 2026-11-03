@@ -158,6 +158,7 @@ type MediaPhoto struct {
 	Category   Category  `gorm:"foreignKey:CategoryID" json:"category"`
 	ImageUrl   string    `gorm:"size:500;not null" json:"image_url"`
 	Caption    string    `gorm:"type:text" json:"caption"`
+	Order      int       `gorm:"default:0" json:"order"`
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
 }
@@ -170,6 +171,7 @@ type MediaVideo struct {
 	YoutubeUrl  string    `gorm:"size:500;not null" json:"youtube_url"`
 	YoutubeId   string    `gorm:"size:100;not null" json:"youtube_id"`
 	Description string    `gorm:"type:text" json:"description"`
+	Order       int       `gorm:"default:0" json:"order"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }

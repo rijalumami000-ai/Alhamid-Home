@@ -146,10 +146,12 @@ func main() {
 	// Media (Photos & Videos)
 	admin.Get("/photos", adminHandler.GetPhotos)
 	admin.Post("/photos", adminHandler.CreatePhoto)
+	admin.Put("/photos/:id", adminHandler.UpdatePhoto)
 	admin.Delete("/photos/:id", adminHandler.DeletePhoto)
 
 	admin.Get("/videos", adminHandler.GetVideos)
 	admin.Post("/videos", adminHandler.CreateVideo)
+	admin.Put("/videos/:id", adminHandler.UpdateVideo)
 	admin.Delete("/videos/:id", adminHandler.DeleteVideo)
 
 	// Banners

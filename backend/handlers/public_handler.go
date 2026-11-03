@@ -108,11 +108,12 @@ func (h *PublicHandler) GetAbout(c *fiber.Ctx) error {
 	database.DB.Order("graduation_year DESC, \"order\" ASC").Find(&alumni)
 
 	return c.JSON(fiber.Map{
-		"profile":      settingMap["about_profile"],
-		"vision":       settingMap["about_vision"],
-		"mission":      settingMap["about_mission"],
-		"site_name":    settingMap["site_name"],
-		"site_tagline": settingMap["site_tagline"],
+		"profile":       settingMap["about_profile"],
+		"profile_image": settingMap["about_profile_image"],
+		"vision":        settingMap["about_vision"],
+		"mission":       settingMap["about_mission"],
+		"site_name":     settingMap["site_name"],
+		"site_tagline":  settingMap["site_tagline"],
 		"caregivers":   caregivers,
 		"facilities":   facilities,
 		"achievements": achievements,
@@ -265,7 +266,7 @@ func (h *PublicHandler) GetPhotoGallery(c *fiber.Ctx) error {
 		}
 	}
 
-	query.Order("id DESC").Find(&photos)
+	query.Order("\"order\" ASC, id DESC").Find(&photos)
 	return c.JSON(photos)
 }
 
@@ -281,7 +282,7 @@ func (h *PublicHandler) GetVideoGallery(c *fiber.Ctx) error {
 		}
 	}
 
-	query.Order("id DESC").Find(&videos)
+	query.Order("\"order\" ASC, id DESC").Find(&videos)
 	return c.JSON(videos)
 }
 

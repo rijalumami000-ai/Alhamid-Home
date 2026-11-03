@@ -56,7 +56,7 @@ Dengan atmosfer pembelajaran yang asri, disiplin tinggi, serta asuhan langsung d
     <div class="lg:col-span-5">
       <div class="rounded-3xl overflow-hidden shadow-2xl border-8 border-white aspect-[4/5] bg-slate-950">
         <img
-          src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1000&q=80"
+          src={aboutData?.profile_image || "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1000&q=80"}
           alt="Suasana Halaqoh Al-Hamid"
           class="w-full h-full object-cover"
         />

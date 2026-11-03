@@ -215,6 +215,8 @@ export const api = {
     getPhotos: () => request<MediaPhoto[]>('/admin/photos'),
     createPhoto: (data: Partial<MediaPhoto>) =>
       request<MediaPhoto>('/admin/photos', { method: 'POST', body: JSON.stringify(data) }),
+    updatePhoto: (id: number, data: Partial<MediaPhoto>) =>
+      request<MediaPhoto>(`/admin/photos/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
     deletePhoto: (id: number) =>
       request<{ message: string }>(`/admin/photos/${id}`, { method: 'DELETE' }),
 
@@ -222,6 +224,8 @@ export const api = {
     getVideos: () => request<MediaVideo[]>('/admin/videos'),
     createVideo: (data: Partial<MediaVideo>) =>
       request<MediaVideo>('/admin/videos', { method: 'POST', body: JSON.stringify(data) }),
+    updateVideo: (id: number, data: Partial<MediaVideo>) =>
+      request<MediaVideo>(`/admin/videos/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
     deleteVideo: (id: number) =>
       request<{ message: string }>(`/admin/videos/${id}`, { method: 'DELETE' }),
 

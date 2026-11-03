@@ -63,22 +63,31 @@
     </div>
 
     <div class="space-y-4 pt-2 text-slate-300 text-sm sm:text-base leading-relaxed relative z-10">
-      <div class="flex items-start gap-4 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
-        <CheckCircle2 class="w-5 h-5 text-teal-400 shrink-0 mt-0.5" />
-        <p>Menyelenggarakan kajian keislaman berbasis kutubut turats dengan sanad keilmuan muttashil yang terjaga.</p>
-      </div>
-      <div class="flex items-start gap-4 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
-        <CheckCircle2 class="w-5 h-5 text-teal-400 shrink-0 mt-0.5" />
-        <p>Mengintegrasikan kurikulum madrasah formal modern (MTs, MA, MAI) yang kompetitif di bidang sains, riset, dan teknologi komputasi.</p>
-      </div>
-      <div class="flex items-start gap-4 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
-        <CheckCircle2 class="w-5 h-5 text-teal-400 shrink-0 mt-0.5" />
-        <p>Membina penguasaan bahasa internasional (Arab dan Inggris) aktif sebagai instrumen dakwah dan kiprah global.</p>
-      </div>
-      <div class="flex items-start gap-4 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
-        <CheckCircle2 class="w-5 h-5 text-teal-400 shrink-0 mt-0.5" />
-        <p>Menanamkan kemandirian jiwa wirausaha (santripreneurship) dan kepedulian sosial kemasyarakatan.</p>
-      </div>
+      {#if aboutData?.mission && aboutData.mission.trim().length > 0}
+        {#each aboutData.mission.split('\n').filter((l) => l.trim().length > 0) as line}
+          <div class="flex items-start gap-4 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
+            <CheckCircle2 class="w-5 h-5 text-teal-400 shrink-0 mt-0.5" />
+            <p>{line.replace(/^[-*•\d.]+\s*/, '')}</p>
+          </div>
+        {/each}
+      {:else}
+        <div class="flex items-start gap-4 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
+          <CheckCircle2 class="w-5 h-5 text-teal-400 shrink-0 mt-0.5" />
+          <p>Menyelenggarakan kajian keislaman berbasis kutubut turats dengan sanad keilmuan muttashil yang terjaga.</p>
+        </div>
+        <div class="flex items-start gap-4 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
+          <CheckCircle2 class="w-5 h-5 text-teal-400 shrink-0 mt-0.5" />
+          <p>Mengintegrasikan kurikulum madrasah formal modern (MTs, MA, MAI) yang kompetitif di bidang sains, riset, dan teknologi komputasi.</p>
+        </div>
+        <div class="flex items-start gap-4 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
+          <CheckCircle2 class="w-5 h-5 text-teal-400 shrink-0 mt-0.5" />
+          <p>Membina penguasaan bahasa internasional (Arab dan Inggris) aktif sebagai instrumen dakwah dan kiprah global.</p>
+        </div>
+        <div class="flex items-start gap-4 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
+          <CheckCircle2 class="w-5 h-5 text-teal-400 shrink-0 mt-0.5" />
+          <p>Menanamkan kemandirian jiwa wirausaha (santripreneurship) dan kepedulian sosial kemasyarakatan.</p>
+        </div>
+      {/if}
     </div>
   </div>
 </div>

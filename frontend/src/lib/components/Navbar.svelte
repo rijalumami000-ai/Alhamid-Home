@@ -52,56 +52,28 @@
 
 <SearchModal bind:isOpen={searchModalOpen} />
 
-<!-- 1. TOP UTILITY STRIP -->
-<div class="bg-[#090D16] text-slate-300 text-xs py-2 px-4 sm:px-8 border-b border-slate-800/80 hidden md:block">
-  <div class="max-w-7xl mx-auto flex items-center justify-between">
-    <div class="flex items-center gap-6">
-      <div class="flex items-center gap-2 text-slate-400 hover:text-white transition">
-        <MapPin class="w-3.5 h-3.5 text-teal-400" />
-        <span class="line-clamp-1">{$siteSettings.site_address || 'Cintamulya, Candipuro, Lampung Selatan'}</span>
-      </div>
-      <div class="flex items-center gap-2 text-slate-400 hover:text-white transition">
-        <Mail class="w-3.5 h-3.5 text-teal-400" />
-        <span>{$siteSettings.site_email || 'sekretariat@alhamid.sch.id'}</span>
-      </div>
-      <div class="flex items-center gap-2 text-slate-400 hover:text-white transition">
-        <Phone class="w-3.5 h-3.5 text-teal-400" />
-        <span>{$siteSettings.site_phone || '+62 812-3456-7890'}</span>
-      </div>
-    </div>
-    <div class="flex items-center gap-4">
-      <div class="flex items-center gap-2 text-[11px] font-medium text-teal-300">
-        <span class="w-1.5 h-1.5 rounded-full bg-teal-400"></span>
-        <span>Penerimaan Santri Baru (PSB) Telah Dibuka</span>
-      </div>
-      <a
-        href="/admin/login"
-        class="text-slate-400 hover:text-white transition font-medium text-[11px] px-2 py-0.5 rounded hover:bg-slate-800"
-      >
-        Portal Admin
-      </a>
-    </div>
-  </div>
-</div>
-
-<!-- 2. MAIN FLOATING/STICKY HEADER -->
+<!-- MAIN FLOATING/STICKY HEADER -->
 <header
   class="sticky top-0 z-40 transition-all duration-300 {isScrolled
     ? 'bg-white/95 backdrop-blur-xl shadow-[0_4px_25px_-5px_rgba(0,0,0,0.07)] py-3 border-b border-slate-200/80'
     : 'bg-white/90 backdrop-blur-md py-4 border-b border-slate-200/60'}"
 >
   <div class="max-w-7xl mx-auto px-4 sm:px-8 flex items-center justify-between">
-    <!-- BRAND LOGO -->
-    <a href="/" class="flex items-center gap-3 group" onclick={closeAll}>
-      <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-950 border border-slate-800 text-teal-400 flex items-center justify-center font-display font-black text-xl shadow-md group-hover:scale-105 group-hover:border-teal-500/50 group-hover:shadow-teal-950/20 transition duration-200">
-        AH
+    <!-- BRAND LOGO & TITLE -->
+    <a href="/" class="flex items-center gap-3 group shrink-0" onclick={closeAll}>
+      <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-950 border border-slate-800 text-teal-400 flex items-center justify-center font-display font-black text-xl shadow-md group-hover:scale-105 group-hover:border-teal-500/50 group-hover:shadow-teal-950/20 transition duration-200 overflow-hidden">
+        {#if $siteSettings.header_brand_logo_url}
+          <img src={$siteSettings.header_brand_logo_url} alt="Logo" class="w-full h-full object-cover" />
+        {:else}
+          {$siteSettings.header_brand_initials || 'AH'}
+        {/if}
       </div>
       <div>
         <div class="font-display font-extrabold text-lg sm:text-xl text-slate-950 tracking-tight leading-none group-hover:text-teal-600 transition">
-          AL-HAMID
+          {$siteSettings.header_brand_title || 'AL-HAMID'}
         </div>
         <div class="text-[10px] font-bold tracking-widest text-slate-400 uppercase mt-1">
-          Pesantren & Academy &bull; Cintamulya
+          {$siteSettings.header_brand_subtitle || 'Pesantren & Academy • Cintamulya'}
         </div>
       </div>
     </a>
@@ -372,18 +344,19 @@
       <!-- Search Trigger Command Pill -->
       <button
         onclick={() => (searchModalOpen = true)}
-        class="flex items-center gap-2.5 px-3.5 py-2 rounded-full bg-slate-100 hover:bg-slate-200/80 text-slate-500 hover:text-slate-900 text-xs font-semibold border border-slate-200/70 transition"
+        class="flex items-center gap-2 px-3.5 py-2 rounded-full bg-slate-100 hover:bg-slate-200/80 text-slate-600 hover:text-slate-900 text-xs font-semibold border border-slate-200/70 transition"
         aria-label="Pencarian Cepat"
       >
         <Search class="w-4 h-4 text-slate-500" />
-        <span class="hidden sm:inline">Pencarian</span>
-        <kbd class="hidden md:inline-block px-1.5 py-0.5 text-[10px] bg-white border border-slate-200 rounded font-mono text-slate-400 shadow-2xs">Ctrl K</kbd>
+        <span>Pencarian</span>
       </button>
 
-      <!-- CTA Button PSB -->
+      <!-- CTA Button PSB (Single-Line, direct link) -->
       <a
-        href="/kontak"
-        class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 hover:from-teal-600 hover:to-emerald-500 text-white font-display font-bold text-xs tracking-wide uppercase shadow-md shadow-teal-950/15 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition duration-200"
+        href="https://psb.alhamidcintamulya.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 hover:from-teal-600 hover:to-emerald-500 text-white font-display font-bold text-xs tracking-wide uppercase shadow-md shadow-teal-950/15 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition duration-200 whitespace-nowrap shrink-0"
       >
         <span>Pendaftaran PSB</span>
         <ArrowRight class="w-3.5 h-3.5" />
@@ -460,7 +433,9 @@
 
       <div class="pt-4 border-t border-slate-100 flex flex-col gap-2">
         <a
-          href="/kontak"
+          href="https://psb.alhamidcintamulya.com/"
+          target="_blank"
+          rel="noopener noreferrer"
           onclick={closeAll}
           class="w-full text-center py-3 rounded-full bg-gradient-to-r from-teal-700 to-emerald-600 text-white font-display font-bold text-xs uppercase tracking-wider shadow-md"
         >

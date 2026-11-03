@@ -71,17 +71,6 @@
     </div>
 
     <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-8 py-20 w-full space-y-4">
-      <div class="flex flex-wrap items-center gap-3">
-        <span class="px-3.5 py-1 rounded-full text-[11px] font-black uppercase tracking-wider shadow-sm {unit.type === 'formal' ? 'bg-indigo-600 text-white' : 'bg-teal-600 text-white'}">
-          {unit.type === 'formal' ? 'Pendidikan Formal' : 'Pendidikan Non-Formal'}
-        </span>
-        {#if unit.badge}
-          <span class="px-3.5 py-1 rounded-full bg-amber-400/15 text-amber-300 border border-amber-400/30 text-xs font-bold backdrop-blur-md">
-            {unit.badge}
-          </span>
-        {/if}
-      </div>
-
       <h1 class="font-display font-black text-3xl sm:text-5xl lg:text-6xl text-white tracking-tight">
         {unit.name}
       </h1>
@@ -92,7 +81,9 @@
 
       <div class="pt-4 flex items-center gap-4">
         <a
-          href="/kontak"
+          href="https://psb.alhamidcintamulya.com/"
+          target="_blank"
+          rel="noopener noreferrer"
           class="px-8 py-3.5 rounded-full bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-slate-950 font-display font-black text-xs uppercase tracking-wider shadow-lg hover:scale-105 active:scale-95 transition"
         >
           Daftar ke {unit.name}
@@ -108,9 +99,6 @@
       <div class="lg:col-span-8 space-y-12">
         <!-- Gambaran Umum -->
         <div class="space-y-4">
-          <div class="text-xs font-black uppercase tracking-widest text-teal-700 flex items-center gap-1.5">
-            <BookOpen class="w-4 h-4" /> Gambaran Umum Program
-          </div>
           <h2 class="font-display font-black text-2xl sm:text-3xl text-slate-950 tracking-tight">
             Membangun Karakter & Kapasitas Intelektual
           </h2>
@@ -122,9 +110,6 @@
         <!-- Kurikulum & Kitab / Pembelajaran -->
         {#if unit.curriculum}
           <div class="space-y-4">
-            <div class="text-xs font-black uppercase tracking-widest text-teal-700 flex items-center gap-1.5">
-              <ClipboardList class="w-4 h-4" /> Kurikulum & Silabus Pembelajaran
-            </div>
             <h2 class="font-display font-black text-2xl sm:text-3xl text-slate-950 tracking-tight">
               Struktur Kurikulum Terpadu
             </h2>
@@ -138,9 +123,6 @@
         <!-- Persyaratan Masuk -->
         {#if unit.requirements}
           <div class="space-y-4">
-            <div class="text-xs font-black uppercase tracking-widest text-teal-700 flex items-center gap-1.5">
-              <CheckCircle2 class="w-4 h-4" /> Persyaratan & Alur Masuk
-            </div>
             <h2 class="font-display font-black text-2xl sm:text-3xl text-slate-950 tracking-tight">
               Kriteria Penerimaan Santri Baru
             </h2>

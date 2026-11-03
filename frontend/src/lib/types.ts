@@ -124,6 +124,7 @@ export interface MediaPhoto {
   category?: Category;
   image_url: string;
   caption: string;
+  order: number;
   created_at: string;
 }
 
@@ -135,6 +136,7 @@ export interface MediaVideo {
   youtube_url: string;
   youtube_id: string;
   description: string;
+  order: number;
   created_at: string;
 }
 
