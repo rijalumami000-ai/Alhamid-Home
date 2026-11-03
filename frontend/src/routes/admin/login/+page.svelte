@@ -4,7 +4,7 @@
   import { Lock, User, ArrowRight, Loader2, Sparkles, AlertCircle } from 'lucide-svelte';
 
   let username = $state('admin');
-  let password = $state('adminpassword123');
+  let password = $state('alhamidku123');
   let loading = $state(false);
   let errorMsg = $state<string | null>(null);
 

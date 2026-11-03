@@ -12,11 +12,10 @@ import (
 
 func SeedInitialData(db *gorm.DB) {
 	// 1. User Admin
-	var count int64
-	db.Model(&models.User{}).Count(&count)
-	if count == 0 {
-		hashed, _ := bcrypt.GenerateFromPassword([]byte("adminpassword123"), bcrypt.DefaultCost)
-		admin := models.User{
+	var admin models.User
+	if err := db.Where("username = ?", "admin").First(&admin).Error; err != nil {
+		hashed, _ := bcrypt.GenerateFromPassword([]byte("alhamidku123"), bcrypt.DefaultCost)
+		admin = models.User{
 			Username:     "admin",
 			Email:        "admin@alhamid.sch.id",
 			PasswordHash: string(hashed),
@@ -24,7 +23,11 @@ func SeedInitialData(db *gorm.DB) {
 			Role:         "admin",
 		}
 		db.Create(&admin)
-		log.Println("[SEED] User admin berhasil dibuat: admin / adminpassword123")
+		log.Println("[SEED] User admin berhasil dibuat: admin / alhamidku123")
+	} else {
+		hashed, _ := bcrypt.GenerateFromPassword([]byte("alhamidku123"), bcrypt.DefaultCost)
+		db.Model(&admin).Update("password_hash", string(hashed))
+		log.Println("[SEED] User admin password diperbarui: alhamidku123")
 	}
 
 	// 2. Settings

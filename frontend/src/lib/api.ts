@@ -16,7 +16,7 @@ import type {
   Banner
 } from './types';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8088/api';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || (typeof window !== 'undefined' ? '/api' : 'http://127.0.0.1:8088/api');
 
 // Helper for JWT Auth Token in browser
 export function getToken(): string | null {
