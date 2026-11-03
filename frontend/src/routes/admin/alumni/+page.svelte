@@ -3,10 +3,18 @@
   import { api } from '$lib/api';
   import type { Alumni } from '$lib/types';
   import { Plus, Edit2, Trash2, X, Users } from 'lucide-svelte';
+  import ConfirmDeleteModal from '$lib/components/ConfirmDeleteModal.svelte';
+  import DriveImageInput from '$lib/components/DriveImageInput.svelte';
 
   let list = $state<Alumni[]>([]);
   let isModalOpen = $state(false);
   let editing = $state<Alumni | null>(null);
+
+  // Delete modal state
+  let isDeleteModalOpen = $state(false);
+  let alumniToDelete = $state<Alumni | null>(null);
+  let isDeleting = $state(false);
+
   let form = $state({
     name: '',
     graduation_year: 2020,
@@ -74,14 +82,23 @@
     }
   }
 
-  async function handleDelete(id: number) {
-    if (confirm('Hapus profil alumni ini?')) {
-      try {
-        await api.admin.deleteAlumni(id);
-        await loadData();
-      } catch (err: any) {
-        alert(err.message || 'Gagal menghapus');
-      }
+  function promptDelete(item: Alumni) {
+    alumniToDelete = item;
+    isDeleteModalOpen = true;
+  }
+
+  async function confirmDelete() {
+    if (!alumniToDelete) return;
+    isDeleting = true;
+    try {
+      await api.admin.deleteAlumni(alumniToDelete.id);
+      isDeleteModalOpen = false;
+      alumniToDelete = null;
+      await loadData();
+    } catch (err: any) {
+      alert(err.message || 'Gagal menghapus alumni');
+    } finally {
+      isDeleting = false;
     }
   }
 
@@ -97,16 +114,16 @@
 <div class="space-y-6">
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
     <div>
-      <h1 class="font-serif-luxury font-bold text-2xl text-slate-900">
-        Direktori Ikatan Alumni (IKAH)
+      <h1 class="font-display font-black text-2xl text-slate-900 tracking-tight">
+        Ikatan Alumni Al-Hamid (IKAPHA)
       </h1>
       <p class="text-xs text-slate-500 mt-1">
-        Kelola profil kiprah lulusan, profesi, dan lokasi alumni Al-Hamid.
+        Kelola basis data alumni per angkatan dan rekam jejak lulusan.
       </p>
     </div>
     <button
       onclick={openCreate}
-      class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold shadow-md transition"
+      class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold shadow-md transition active:scale-95"
     >
       <Plus class="w-4 h-4" /> Tambah Alumni
     </button>
@@ -115,38 +132,51 @@
   <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
     <div class="overflow-x-auto">
       <table class="w-full text-left text-xs">
-        <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
+        <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
           <tr>
-            <th class="p-4">Nama Alumni</th>
-            <th class="p-4">Angkatan</th>
-            <th class="p-4">Unit Lulusan</th>
-            <th class="p-4">Profesi & Domisili</th>
+            <th class="p-4">Alumni</th>
+            <th class="p-4">Angkatan (Tahun Lulus)</th>
+            <th class="p-4">Unit Pendidikan</th>
+            <th class="p-4">Domisili</th>
             <th class="p-4 text-right">Aksi</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-100">
           {#each list as item}
             <tr class="hover:bg-slate-50/70 transition">
-              <td class="p-4">
-                <div class="flex items-center gap-3">
-                  <img src={item.photo_url} alt={item.name} class="w-9 h-9 rounded-xl object-cover border border-slate-200" />
-                  <div>
-                    <div class="font-bold text-slate-900">{item.name}</div>
-                    <div class="text-[11px] text-slate-400 line-clamp-1">{item.story}</div>
-                  </div>
+              <td class="p-4 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden shrink-0 border border-slate-200">
+                  {#if item.photo_url}
+                    <img src={item.photo_url} alt={item.name} class="w-full h-full object-cover" />
+                  {:else}
+                    <div class="w-full h-full flex items-center justify-center text-slate-400">
+                      <Users class="w-4 h-4" />
+                    </div>
+                  {/if}
+                </div>
+                <div>
+                  <div class="font-bold text-slate-900">{item.name}</div>
+                  {#if item.story}
+                    <div class="text-[11px] text-slate-500 line-clamp-1">{item.story}</div>
+                  {/if}
                 </div>
               </td>
-              <td class="p-4 font-mono font-bold text-slate-700">{item.graduation_year}</td>
-              <td class="p-4 text-slate-600 font-medium">{item.education_unit}</td>
-              <td class="p-4 text-slate-600">
-                <div class="font-medium text-slate-800">{item.profession}</div>
-                <div class="text-[11px] text-slate-400">{item.current_location}</div>
-              </td>
-              <td class="p-4 text-right space-x-1">
-                <button onclick={() => openEdit(item)} class="p-1.5 rounded-lg text-slate-500 hover:text-emerald-700">
+              <td class="p-4 font-mono font-bold text-teal-700">Angkatan {item.graduation_year}</td>
+              <td class="p-4 font-medium text-slate-700">{item.education_unit || '-'}</td>
+              <td class="p-4 text-slate-600">{item.current_location || '-'}</td>
+              <td class="p-4 text-right">
+                <button
+                  onclick={() => openEdit(item)}
+                  class="p-1.5 rounded-lg text-slate-500 hover:text-teal-700 hover:bg-slate-100 transition mr-1"
+                  title="Edit Alumni"
+                >
                   <Edit2 class="w-4 h-4" />
                 </button>
-                <button onclick={() => handleDelete(item.id)} class="p-1.5 rounded-lg text-slate-500 hover:text-red-600">
+                <button
+                  onclick={() => promptDelete(item)}
+                  class="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition"
+                  title="Hapus Alumni"
+                >
                   <Trash2 class="w-4 h-4" />
                 </button>
               </td>
@@ -163,7 +193,7 @@
   <div class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 overflow-hidden">
       <div class="p-6 border-b border-slate-100 flex items-center justify-between">
-        <h2 class="font-serif-luxury font-bold text-lg text-slate-900">
+        <h2 class="font-display font-bold text-lg text-slate-900">
           {editing ? 'Edit Alumni' : 'Tambah Alumni'}
         </h2>
         <button onclick={() => (isModalOpen = false)}>
@@ -171,7 +201,7 @@
         </button>
       </div>
 
-      <form onsubmit={handleSave} class="p-6 space-y-4">
+      <form onsubmit={handleSave} class="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
         <div class="space-y-1">
           <label for="al_name" class="text-xs font-bold text-slate-700 uppercase">Nama Lengkap *</label>
           <input
@@ -185,10 +215,11 @@
 
         <div class="grid grid-cols-2 gap-3">
           <div class="space-y-1">
-            <label for="al_year" class="text-xs font-bold text-slate-700 uppercase">Tahun Kelulusan</label>
+            <label for="al_year" class="text-xs font-bold text-slate-700 uppercase">Tahun Kelulusan *</label>
             <input
               id="al_year"
               type="number"
+              required
               bind:value={form.graduation_year}
               class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium"
             />
@@ -205,31 +236,26 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
-          <div class="space-y-1">
-            <label for="al_prof" class="text-xs font-bold text-slate-700 uppercase">Profesi / Karier</label>
-            <input
-              id="al_prof"
-              type="text"
-              bind:value={form.profession}
-              placeholder="Dokter / Dosen / IT"
-              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium"
-            />
-          </div>
-          <div class="space-y-1">
-            <label for="al_loc" class="text-xs font-bold text-slate-700 uppercase">Domisili Sekarang</label>
-            <input
-              id="al_loc"
-              type="text"
-              bind:value={form.current_location}
-              placeholder="Bandung / Kairo"
-              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium"
-            />
-          </div>
+        <DriveImageInput
+          id="al_photo"
+          label="Foto Alumni"
+          bind:value={form.photo_url}
+          placeholder="https://drive.google.com/... atau https://..."
+        />
+
+        <div class="space-y-1">
+          <label for="al_loc" class="text-xs font-bold text-slate-700 uppercase">Asal Daerah / Kota Domisili</label>
+          <input
+            id="al_loc"
+            type="text"
+            bind:value={form.current_location}
+            placeholder="Lampung Selatan / Bandar Lampung / Jakarta"
+            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium"
+          />
         </div>
 
         <div class="space-y-1">
-          <label for="al_story" class="text-xs font-bold text-slate-700 uppercase">Cerita Kiprah / Kesan</label>
+          <label for="al_story" class="text-xs font-bold text-slate-700 uppercase">Pesan & Kesan Alumni</label>
           <textarea
             id="al_story"
             rows="3"
@@ -248,7 +274,7 @@
           </button>
           <button
             type="submit"
-            class="px-5 py-2 rounded-xl bg-emerald-800 text-white text-xs font-bold shadow-md"
+            class="px-5 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold shadow-md transition"
           >
             Simpan Alumni
           </button>
@@ -258,3 +284,16 @@
   </div>
 {/if}
 
+<!-- CONFIRM DELETE MODAL -->
+<ConfirmDeleteModal
+  isOpen={isDeleteModalOpen}
+  title="Hapus Alumni"
+  itemName={alumniToDelete?.name}
+  message="Data alumni ini akan dihapus dari arsip direktori alumni pesantren."
+  {isDeleting}
+  onConfirm={confirmDelete}
+  onCancel={() => {
+    isDeleteModalOpen = false;
+    alumniToDelete = null;
+  }}
+/>

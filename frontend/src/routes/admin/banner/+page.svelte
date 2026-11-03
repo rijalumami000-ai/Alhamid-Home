@@ -2,11 +2,19 @@
   import { onMount } from 'svelte';
   import { api } from '$lib/api';
   import type { Banner } from '$lib/types';
-  import { Plus, Edit2, Trash2, X, Sliders, ExternalLink } from 'lucide-svelte';
+  import { Plus, Edit2, Trash2, X } from 'lucide-svelte';
+  import ConfirmDeleteModal from '$lib/components/ConfirmDeleteModal.svelte';
+  import DriveImageInput from '$lib/components/DriveImageInput.svelte';
 
   let list = $state<Banner[]>([]);
   let isModalOpen = $state(false);
   let editing = $state<Banner | null>(null);
+
+  // Delete modal state
+  let isDeleteModalOpen = $state(false);
+  let bannerToDelete = $state<Banner | null>(null);
+  let isDeleting = $state(false);
+
   let form = $state({
     title: '',
     subtitle: '',
@@ -71,14 +79,23 @@
     }
   }
 
-  async function handleDelete(id: number) {
-    if (confirm('Hapus slide banner ini?')) {
-      try {
-        await api.admin.deleteBanner(id);
-        await loadData();
-      } catch (err: any) {
-        alert(err.message || 'Gagal menghapus');
-      }
+  function promptDelete(b: Banner) {
+    bannerToDelete = b;
+    isDeleteModalOpen = true;
+  }
+
+  async function confirmDelete() {
+    if (!bannerToDelete) return;
+    isDeleting = true;
+    try {
+      await api.admin.deleteBanner(bannerToDelete.id);
+      isDeleteModalOpen = false;
+      bannerToDelete = null;
+      await loadData();
+    } catch (err: any) {
+      alert(err.message || 'Gagal menghapus banner');
+    } finally {
+      isDeleting = false;
     }
   }
 
@@ -94,7 +111,7 @@
 <div class="space-y-6">
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
     <div>
-      <h1 class="font-serif-luxury font-bold text-2xl text-slate-900">
+      <h1 class="font-display font-black text-2xl text-slate-900 tracking-tight">
         Hero Banner & Slider Beranda
       </h1>
       <p class="text-xs text-slate-500 mt-1">
@@ -103,7 +120,7 @@
     </div>
     <button
       onclick={openCreate}
-      class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold shadow-md transition"
+      class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold shadow-md transition active:scale-95"
     >
       <Plus class="w-4 h-4" /> Tambah Banner Slide
     </button>
@@ -115,7 +132,7 @@
         <div class="w-full md:w-64 h-36 rounded-2xl overflow-hidden bg-slate-900 shrink-0 relative">
           <img src={item.image_url} alt={item.title} class="w-full h-full object-cover" />
           {#if item.badge}
-            <span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-emerald-800 text-white text-[9px] font-bold">
+            <span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-teal-700 text-white text-[9px] font-bold">
               {item.badge}
             </span>
           {/if}
@@ -123,16 +140,16 @@
 
         <div class="flex-1 space-y-2">
           <div class="flex items-center gap-2">
-            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase {item.is_active ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'}">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase {item.is_active ? 'bg-teal-100 text-teal-800' : 'bg-slate-200 text-slate-600'}">
               {item.is_active ? 'Aktif Tayang' : 'Nonaktif'}
             </span>
             <span class="text-xs text-slate-400 font-mono">Urutan #{item.order}</span>
           </div>
 
-          <h2 class="font-serif-luxury font-bold text-lg text-slate-900">{item.title}</h2>
+          <h2 class="font-display font-bold text-lg text-slate-900">{item.title}</h2>
           <p class="text-xs text-slate-500 line-clamp-2">{item.subtitle}</p>
 
-          <div class="text-xs text-emerald-700 font-semibold pt-1">
+          <div class="text-xs text-teal-700 font-semibold pt-1">
             Tombol: "{item.button_text}" &rarr; <span class="font-mono text-slate-500">{item.button_link}</span>
           </div>
         </div>
@@ -140,13 +157,15 @@
         <div class="flex md:flex-col items-center gap-2 shrink-0">
           <button
             onclick={() => openEdit(item)}
-            class="p-2 rounded-xl text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 transition"
+            class="p-2 rounded-xl text-slate-600 hover:text-teal-700 hover:bg-teal-50 transition"
+            title="Edit Slide"
           >
             <Edit2 class="w-4 h-4" />
           </button>
           <button
-            onclick={() => handleDelete(item.id)}
-            class="p-2 rounded-xl text-slate-600 hover:text-red-600 hover:bg-red-50 transition"
+            onclick={() => promptDelete(item)}
+            class="p-2 rounded-xl text-slate-600 hover:text-rose-600 hover:bg-rose-50 transition"
+            title="Hapus Slide"
           >
             <Trash2 class="w-4 h-4" />
           </button>
@@ -161,7 +180,7 @@
   <div class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-200 overflow-hidden">
       <div class="p-6 border-b border-slate-100 flex items-center justify-between">
-        <h2 class="font-serif-luxury font-bold text-lg text-slate-900">
+        <h2 class="font-display font-bold text-lg text-slate-900">
           {editing ? 'Edit Banner Slide' : 'Tambah Banner Slide'}
         </h2>
         <button onclick={() => (isModalOpen = false)}><X class="w-5 h-5 text-slate-400" /></button>
@@ -189,16 +208,12 @@
           ></textarea>
         </div>
 
-        <div class="space-y-1">
-          <label for="b_img" class="text-xs font-bold text-slate-700 uppercase">URL Background Foto *</label>
-          <input
-            id="b_img"
-            type="url"
-            required
-            bind:value={form.image_url}
-            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium"
-          />
-        </div>
+        <DriveImageInput
+          id="b_img"
+          label="Background Foto Banner"
+          required
+          bind:value={form.image_url}
+        />
 
         <div class="grid grid-cols-2 gap-3">
           <div class="space-y-1">
@@ -246,16 +261,29 @@
         </div>
 
         <div class="flex items-center gap-2 pt-2">
-          <input id="b_active" type="checkbox" bind:checked={form.is_active} class="w-4 h-4 text-emerald-600 rounded" />
+          <input id="b_active" type="checkbox" bind:checked={form.is_active} class="w-4 h-4 text-teal-600 rounded" />
           <label for="b_active" class="text-xs font-bold text-slate-700">Aktifkan Slide Ini di Beranda</label>
         </div>
 
         <div class="pt-4 border-t border-slate-100 flex justify-end gap-2">
           <button type="button" onclick={() => (isModalOpen = false)} class="px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold">Batal</button>
-          <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-800 text-white text-xs font-bold shadow-md">Simpan Slide</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold shadow-md">Simpan Slide</button>
         </div>
       </form>
     </div>
   </div>
 {/if}
 
+<!-- CONFIRM DELETE DIALOG -->
+<ConfirmDeleteModal
+  isOpen={isDeleteModalOpen}
+  title="Hapus Banner Slide"
+  itemName={bannerToDelete?.title}
+  message="Slide banner ini akan segera dihapus dari rotasi beranda utama website."
+  {isDeleting}
+  onConfirm={confirmDelete}
+  onCancel={() => {
+    isDeleteModalOpen = false;
+    bannerToDelete = null;
+  }}
+/>

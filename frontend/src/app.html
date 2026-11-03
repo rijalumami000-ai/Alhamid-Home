@@ -7,10 +7,38 @@
 		<meta name="theme-color" content="#064e3b" />
 		<title>Pondok Pesantren Al-Hamid | Berakhlak, Unggul & Berdaya Saing Global</title>
 		
-		<!-- Google Fonts: Outfit (Modern Geometric Display) + Plus Jakarta Sans (Clean Modern Sans) + Newsreader (Editorial Serif) -->
+		<!-- Google Fonts Typography Collection -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,600&family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Manrope:wght@500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Outfit:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=Urbanist:wght@400;500;600;700&display=swap" rel="stylesheet">
+		
+		<script>
+			// Instant font hydration to prevent layout shift
+			(function() {
+				try {
+					var p = localStorage.getItem('alhamid_font_preset') || 'architectural';
+					var root = document.documentElement;
+					root.setAttribute('data-font', p);
+					if (p === 'prestige') {
+						root.style.setProperty('--font-display', "'Cormorant Garamond', Georgia, serif");
+						root.style.setProperty('--font-body', "'Inter', -apple-system, BlinkMacSystemFont, sans-serif");
+						root.style.setProperty('--font-editorial', "'Playfair Display', Georgia, serif");
+					} else if (p === 'neohumanist') {
+						root.style.setProperty('--font-display', "'Space Grotesk', -apple-system, sans-serif");
+						root.style.setProperty('--font-body', "'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif");
+						root.style.setProperty('--font-editorial', "'Lora', Georgia, serif");
+					} else if (p === 'swiss') {
+						root.style.setProperty('--font-display', "'Manrope', -apple-system, BlinkMacSystemFont, sans-serif");
+						root.style.setProperty('--font-body', "'Inter', -apple-system, BlinkMacSystemFont, sans-serif");
+						root.style.setProperty('--font-editorial', "'Fraunces', Georgia, serif");
+					} else if (p === 'monolith') {
+						root.style.setProperty('--font-display', "'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif");
+						root.style.setProperty('--font-body', "'Urbanist', -apple-system, BlinkMacSystemFont, sans-serif");
+						root.style.setProperty('--font-editorial', "'Instrument Serif', Georgia, serif");
+					}
+				} catch (e) {}
+			})();
+		</script>
 		
 		%sveltekit.head%
 	</head>

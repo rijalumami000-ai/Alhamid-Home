@@ -28,10 +28,9 @@
   <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-teal-500/15 blur-3xl pointer-events-none rounded-full"></div>
 
   <div class="max-w-6xl mx-auto space-y-4 relative z-10">
-    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/15 text-teal-300 text-xs font-bold border border-teal-500/30">
-      <Sparkles class="w-3.5 h-3.5 text-teal-400" />
-      <span>Masyayikh & Dewan Pembina</span>
-    </div>
+    <p class="text-xs font-mono uppercase tracking-[0.25em] font-semibold text-teal-400">
+      Masyayikh & Dewan Pembina
+    </p>
     <h1 class="font-display font-black text-3xl sm:text-5xl lg:text-6xl text-white tracking-tight">
       Dewan Pengasuh Pesantren
     </h1>

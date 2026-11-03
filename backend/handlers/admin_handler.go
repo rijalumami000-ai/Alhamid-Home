@@ -29,6 +29,33 @@ func slugify(s string) string {
 	return slug
 }
 
+func normalizeGoogleDriveURL(raw string) string {
+	raw = strings.TrimSpace(raw)
+	if raw == "" {
+		return ""
+	}
+
+	// 1. /file/d/FILE_ID
+	reFile := regexp.MustCompile(`/file/d/([a-zA-Z0-9_-]+)`)
+	if match := reFile.FindStringSubmatch(raw); len(match) > 1 {
+		return fmt.Sprintf("https://lh3.googleusercontent.com/d/%s", match[1])
+	}
+
+	// 2. id=FILE_ID
+	reID := regexp.MustCompile(`[?&]id=([a-zA-Z0-9_-]+)`)
+	if match := reID.FindStringSubmatch(raw); len(match) > 1 {
+		return fmt.Sprintf("https://lh3.googleusercontent.com/d/%s", match[1])
+	}
+
+	// 3. googleusercontent.com/d/FILE_ID
+	reGuc := regexp.MustCompile(`googleusercontent\.com/d/([a-zA-Z0-9_-]+)`)
+	if match := reGuc.FindStringSubmatch(raw); len(match) > 1 {
+		return fmt.Sprintf("https://lh3.googleusercontent.com/d/%s", match[1])
+	}
+
+	return raw
+}
+
 // ---------------- DASHBOARD ----------------
 func (h *AdminHandler) GetDashboardStats(c *fiber.Ctx) error {
 	var totalArticles, totalUnits, totalPhotos, totalVideos, unreadMessages, totalCaregivers int64
@@ -91,6 +118,8 @@ func (h *AdminHandler) CreateArticle(c *fiber.Ctx) error {
 		article.PublishedAt = time.Now()
 	}
 
+	article.ThumbnailUrl = normalizeGoogleDriveURL(article.ThumbnailUrl)
+
 	if err := database.DB.Create(&article).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Gagal menyimpan artikel"})
 	}
@@ -118,7 +147,7 @@ func (h *AdminHandler) UpdateArticle(c *fiber.Ctx) error {
 	article.CategoryID = input.CategoryID
 	article.Excerpt = input.Excerpt
 	article.Content = input.Content
-	article.ThumbnailUrl = input.ThumbnailUrl
+	article.ThumbnailUrl = normalizeGoogleDriveURL(input.ThumbnailUrl)
 	article.Author = input.Author
 	article.Status = input.Status
 	article.IsFeatured = input.IsFeatured
@@ -200,6 +229,8 @@ func (h *AdminHandler) CreateEducationUnit(c *fiber.Ctx) error {
 	if unit.Slug == "" {
 		unit.Slug = slugify(unit.Name)
 	}
+	unit.HeroImage = normalizeGoogleDriveURL(unit.HeroImage)
+	unit.HeadmasterPhoto = normalizeGoogleDriveURL(unit.HeadmasterPhoto)
 	if err := database.DB.Create(&unit).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Gagal menambah unit pendidikan"})
 	}
@@ -215,6 +246,8 @@ func (h *AdminHandler) UpdateEducationUnit(c *fiber.Ctx) error {
 	if err := c.BodyParser(&unit); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Format data tidak valid"})
 	}
+	unit.HeroImage = normalizeGoogleDriveURL(unit.HeroImage)
+	unit.HeadmasterPhoto = normalizeGoogleDriveURL(unit.HeadmasterPhoto)
 	database.DB.Save(&unit)
 	return c.JSON(unit)
 }
@@ -239,6 +272,7 @@ func (h *AdminHandler) CreateCaregiver(c *fiber.Ctx) error {
 	if err := c.BodyParser(&item); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Format data tidak valid"})
 	}
+	item.PhotoUrl = normalizeGoogleDriveURL(item.PhotoUrl)
 	if err := database.DB.Create(&item).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Gagal menambah dewan pengasuh"})
 	}
@@ -254,6 +288,7 @@ func (h *AdminHandler) UpdateCaregiver(c *fiber.Ctx) error {
 	if err := c.BodyParser(&item); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Format data tidak valid"})
 	}
+	item.PhotoUrl = normalizeGoogleDriveURL(item.PhotoUrl)
 	database.DB.Save(&item)
 	return c.JSON(item)
 }
@@ -278,6 +313,7 @@ func (h *AdminHandler) CreateFacility(c *fiber.Ctx) error {
 	if err := c.BodyParser(&item); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Format data tidak valid"})
 	}
+	item.ImageUrl = normalizeGoogleDriveURL(item.ImageUrl)
 	database.DB.Create(&item)
 	return c.Status(fiber.StatusCreated).JSON(item)
 }
@@ -291,6 +327,7 @@ func (h *AdminHandler) UpdateFacility(c *fiber.Ctx) error {
 	if err := c.BodyParser(&item); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Format data tidak valid"})
 	}
+	item.ImageUrl = normalizeGoogleDriveURL(item.ImageUrl)
 	database.DB.Save(&item)
 	return c.JSON(item)
 }
@@ -313,6 +350,7 @@ func (h *AdminHandler) CreateAchievement(c *fiber.Ctx) error {
 	if err := c.BodyParser(&item); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Format data tidak valid"})
 	}
+	item.ImageUrl = normalizeGoogleDriveURL(item.ImageUrl)
 	database.DB.Create(&item)
 	return c.Status(fiber.StatusCreated).JSON(item)
 }
@@ -326,6 +364,7 @@ func (h *AdminHandler) UpdateAchievement(c *fiber.Ctx) error {
 	if err := c.BodyParser(&item); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Format data tidak valid"})
 	}
+	item.ImageUrl = normalizeGoogleDriveURL(item.ImageUrl)
 	database.DB.Save(&item)
 	return c.JSON(item)
 }
@@ -348,6 +387,7 @@ func (h *AdminHandler) CreateTestimonial(c *fiber.Ctx) error {
 	if err := c.BodyParser(&item); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Format data tidak valid"})
 	}
+	item.AvatarUrl = normalizeGoogleDriveURL(item.AvatarUrl)
 	database.DB.Create(&item)
 	return c.Status(fiber.StatusCreated).JSON(item)
 }
@@ -361,6 +401,7 @@ func (h *AdminHandler) UpdateTestimonial(c *fiber.Ctx) error {
 	if err := c.BodyParser(&item); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Format data tidak valid"})
 	}
+	item.AvatarUrl = normalizeGoogleDriveURL(item.AvatarUrl)
 	database.DB.Save(&item)
 	return c.JSON(item)
 }
@@ -383,6 +424,7 @@ func (h *AdminHandler) CreateAlumni(c *fiber.Ctx) error {
 	if err := c.BodyParser(&item); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Format data tidak valid"})
 	}
+	item.PhotoUrl = normalizeGoogleDriveURL(item.PhotoUrl)
 	database.DB.Create(&item)
 	return c.Status(fiber.StatusCreated).JSON(item)
 }
@@ -396,6 +438,7 @@ func (h *AdminHandler) UpdateAlumni(c *fiber.Ctx) error {
 	if err := c.BodyParser(&item); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Format data tidak valid"})
 	}
+	item.PhotoUrl = normalizeGoogleDriveURL(item.PhotoUrl)
 	database.DB.Save(&item)
 	return c.JSON(item)
 }
@@ -418,6 +461,7 @@ func (h *AdminHandler) CreatePhoto(c *fiber.Ctx) error {
 	if err := c.BodyParser(&item); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Format data tidak valid"})
 	}
+	item.ImageUrl = normalizeGoogleDriveURL(item.ImageUrl)
 	database.DB.Create(&item)
 	database.DB.Preload("Category").First(&item, item.ID)
 	return c.Status(fiber.StatusCreated).JSON(item)
@@ -473,6 +517,7 @@ func (h *AdminHandler) CreateBanner(c *fiber.Ctx) error {
 	if err := c.BodyParser(&b); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Format data banner tidak valid"})
 	}
+	b.ImageUrl = normalizeGoogleDriveURL(b.ImageUrl)
 	database.DB.Create(&b)
 	return c.Status(fiber.StatusCreated).JSON(b)
 }
@@ -486,6 +531,7 @@ func (h *AdminHandler) UpdateBanner(c *fiber.Ctx) error {
 	if err := c.BodyParser(&b); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Format data banner tidak valid"})
 	}
+	b.ImageUrl = normalizeGoogleDriveURL(b.ImageUrl)
 	database.DB.Save(&b)
 	return c.JSON(b)
 }

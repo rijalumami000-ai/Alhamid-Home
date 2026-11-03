@@ -67,6 +67,7 @@ func SeedInitialData(db *gorm.DB) {
 func seedSettings(db *gorm.DB) {
 	settings := []models.Setting{
 		{Key: "site_name", Value: "Pondok Pesantren Al-Hamid", Category: "general"},
+		{Key: "site_font_preset", Value: "architectural", Category: "general"},
 		{Key: "site_tagline", Value: "Meneguhkan Sanad Keilmuan, Mengintegrasikan Karakter, Membangun Generasi Emas", Category: "general"},
 		{Key: "site_description", Value: "Lembaga pendidikan Islam terpadu yang memadukan kedalaman kajian kitab kuning (turats) dengan keunggulan akademik sains dan teknologi modern.", Category: "general"},
 		{Key: "site_email", Value: "sekretariat@alhamid.sch.id", Category: "contact"},

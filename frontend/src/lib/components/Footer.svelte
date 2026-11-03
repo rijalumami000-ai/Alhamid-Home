@@ -8,6 +8,7 @@
     ShieldCheck,
     Sparkles
   } from 'lucide-svelte';
+  import { siteSettings } from '$lib/stores/settings';
 </script>
 
 <footer class="bg-[#070A11] text-slate-300 border-t border-slate-800/80 pt-20 pb-12 relative overflow-hidden">
@@ -24,23 +25,23 @@
           </div>
           <div>
             <div class="font-display font-black text-xl text-white tracking-tight">
-              AL-HAMID
+              {$siteSettings.site_name || 'AL-HAMID'}
             </div>
-            <div class="text-[10px] text-teal-400 font-bold tracking-widest uppercase mt-0.5">
-              Pesantren & Academy &bull; Cintamulya
+            <div class="text-[10px] text-teal-400 font-bold tracking-widest uppercase mt-0.5 line-clamp-1">
+              {$siteSettings.site_tagline || 'Pesantren & Academy • Cintamulya'}
             </div>
           </div>
         </div>
 
         <p class="text-sm text-slate-400 leading-relaxed pr-6 font-normal">
-          Lembaga pendidikan Islam kontemporer yang memadukan tradisi sanad kitab kuning (turats) dengan keunggulan sains, riset madrasah, dan rekayasa teknologi komputasi modern.
+          {$siteSettings.site_description || 'Lembaga pendidikan Islam kontemporer yang memadukan tradisi sanad kitab kuning (turats) dengan keunggulan sains, riset madrasah, dan rekayasa teknologi komputasi modern.'}
         </p>
 
         <!-- Social Media Links (Modern Clean SVG Pills) -->
         <div class="flex items-center gap-2.5 pt-2">
           <!-- Instagram -->
           <a
-            href="https://instagram.com"
+            href={$siteSettings.social_instagram || 'https://instagram.com'}
             target="_blank"
             rel="noopener noreferrer"
             class="w-10 h-10 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-teal-500/50 hover:bg-teal-500/10 text-slate-400 hover:text-teal-300 flex items-center justify-center transition duration-200"
@@ -50,7 +51,7 @@
           </a>
           <!-- YouTube -->
           <a
-            href="https://youtube.com"
+            href={$siteSettings.social_youtube || 'https://youtube.com'}
             target="_blank"
             rel="noopener noreferrer"
             class="w-10 h-10 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-rose-500/50 hover:bg-rose-500/10 text-slate-400 hover:text-rose-400 flex items-center justify-center transition duration-200"
@@ -60,7 +61,7 @@
           </a>
           <!-- Facebook -->
           <a
-            href="https://facebook.com"
+            href={$siteSettings.social_facebook || 'https://facebook.com'}
             target="_blank"
             rel="noopener noreferrer"
             class="w-10 h-10 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-blue-500/50 hover:bg-blue-500/10 text-slate-400 hover:text-blue-400 flex items-center justify-center transition duration-200"
@@ -134,15 +135,15 @@
         <div class="space-y-3 text-xs text-slate-400">
           <div class="flex items-start gap-2.5">
             <MapPin class="w-4 h-4 text-teal-400 shrink-0 mt-0.5" />
-            <span>Jl. Pesantren Al-Hamid No. 01, Cintamulya, Candipuro, Lampung Selatan</span>
+            <span>{$siteSettings.site_address || 'Jl. Pesantren Al-Hamid No. 01, Cintamulya, Candipuro, Lampung Selatan'}</span>
           </div>
           <div class="flex items-center gap-2.5">
             <Phone class="w-4 h-4 text-teal-400 shrink-0" />
-            <span>+62 812-3456-7890</span>
+            <span>{$siteSettings.site_phone || '+62 812-3456-7890'}</span>
           </div>
           <div class="flex items-center gap-2.5">
             <Mail class="w-4 h-4 text-teal-400 shrink-0" />
-            <span>sekretariat@alhamid.sch.id</span>
+            <span>{$siteSettings.site_email || 'sekretariat@alhamid.sch.id'}</span>
           </div>
         </div>
       </div>
@@ -151,7 +152,7 @@
     <!-- Bottom Copyright -->
     <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
       <div>
-        &copy; {new Date().getFullYear()} Pondok Pesantren Al-Hamid Cintamulya. Seluruh hak cipta dilindungi.
+        &copy; {new Date().getFullYear()} {$siteSettings.site_name || 'Pondok Pesantren Al-Hamid'}. Seluruh hak cipta dilindungi.
       </div>
       <div class="flex items-center gap-4">
         <a href="/admin/login" class="hover:text-teal-400 transition flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900 border border-slate-800">

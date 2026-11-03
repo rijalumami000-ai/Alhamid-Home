@@ -3,9 +3,15 @@
   import { api } from '$lib/api';
   import type { ContactMessage } from '$lib/types';
   import { Mail, Check, Trash2, X, Phone, MessageSquare } from 'lucide-svelte';
+  import ConfirmDeleteModal from '$lib/components/ConfirmDeleteModal.svelte';
 
   let list = $state<ContactMessage[]>([]);
   let selectedMessage = $state<ContactMessage | null>(null);
+
+  // Delete modal state
+  let isDeleteModalOpen = $state(false);
+  let messageToDelete = $state<ContactMessage | null>(null);
+  let isDeleting = $state(false);
 
   async function loadData() {
     try {
@@ -25,15 +31,25 @@
     }
   }
 
-  async function handleDelete(id: number) {
-    if (confirm('Hapus pesan ini dari kontak masuk?')) {
-      try {
-        await api.admin.deleteMessage(id);
-        if (selectedMessage?.id === id) selectedMessage = null;
-        await loadData();
-      } catch (e) {
-        console.error(e);
-      }
+  function promptDelete(msg: ContactMessage) {
+    messageToDelete = msg;
+    isDeleteModalOpen = true;
+  }
+
+  async function confirmDelete() {
+    if (!messageToDelete) return;
+    isDeleting = true;
+    try {
+      await api.admin.deleteMessage(messageToDelete.id);
+      if (selectedMessage?.id === messageToDelete.id) selectedMessage = null;
+      isDeleteModalOpen = false;
+      messageToDelete = null;
+      await loadData();
+    } catch (e) {
+      console.error(e);
+      alert('Gagal menghapus pesan');
+    } finally {
+      isDeleting = false;
     }
   }
 
@@ -55,7 +71,7 @@
 
 <div class="space-y-6">
   <div>
-    <h1 class="font-serif-luxury font-bold text-2xl text-slate-900">
+    <h1 class="font-display font-black text-2xl text-slate-900 tracking-tight">
       Kotak Masuk Pesan & Pertanyaan
     </h1>
     <p class="text-xs text-slate-500 mt-1">
@@ -72,7 +88,7 @@
       <div class="flex-1 overflow-y-auto divide-y divide-slate-100">
         {#each list as msg}
           <div
-            class="p-4 cursor-pointer hover:bg-slate-50 transition space-y-1 {selectedMessage?.id === msg.id ? 'bg-emerald-50/70 border-l-4 border-emerald-700' : ''}"
+            class="p-4 cursor-pointer hover:bg-slate-50 transition space-y-1 {selectedMessage?.id === msg.id ? 'bg-teal-50/70 border-l-4 border-teal-700' : ''}"
             role="button"
             tabindex="0"
             onclick={() => viewMessage(msg)}
@@ -104,10 +120,10 @@
         <div class="space-y-6 overflow-y-auto">
           <div class="flex items-start justify-between pb-4 border-b border-slate-100">
             <div>
-              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase {selectedMessage.is_read ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase {selectedMessage.is_read ? 'bg-teal-100 text-teal-800' : 'bg-amber-100 text-amber-800'}">
                 {selectedMessage.is_read ? 'Sudah Dibaca' : 'Baru'}
               </span>
-              <h2 class="font-serif-luxury font-bold text-xl text-slate-900 mt-2">
+              <h2 class="font-display font-bold text-xl text-slate-900 mt-2">
                 {selectedMessage.subject}
               </h2>
               <div class="text-xs text-slate-500 mt-1">
@@ -115,15 +131,15 @@
               </div>
               {#if selectedMessage.phone}
                 <div class="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
-                  <Phone class="w-3.5 h-3.5 text-emerald-600" />
+                  <Phone class="w-3.5 h-3.5 text-teal-600" />
                   <span>{selectedMessage.phone}</span>
                 </div>
               {/if}
             </div>
 
             <button
-              onclick={() => handleDelete(selectedMessage.id)}
-              class="p-2 rounded-xl text-slate-400 hover:text-red-600 hover:bg-red-50"
+              onclick={() => promptDelete(selectedMessage!)}
+              class="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition"
               title="Hapus Pesan"
             >
               <Trash2 class="w-5 h-5" />
@@ -132,7 +148,7 @@
 
           <div class="space-y-2">
             <div class="text-xs font-bold uppercase text-slate-400">Isi Pesan:</div>
-            <p class="text-slate-800 text-sm leading-relaxed whitespace-pre-line p-4 rounded-2xl bg-slate-50 border border-slate-100">
+            <p class="text-slate-800 text-sm leading-relaxed whitespace-pre-line p-4 rounded-2xl bg-slate-50 border border-slate-100 font-medium">
               {selectedMessage.message}
             </p>
           </div>
@@ -148,7 +164,7 @@
               <a
                 href="https://wa.me/{selectedMessage.phone.replace(/[^0-9]/g, '')}"
                 target="_blank"
-                class="px-4 py-2 rounded-xl bg-emerald-800 text-white text-xs font-bold hover:bg-emerald-700 transition"
+                class="px-4 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold transition shadow-sm"
               >
                 Balas via WhatsApp
               </a>
@@ -171,3 +187,16 @@
   </div>
 </div>
 
+<!-- CONFIRM DELETE MODAL -->
+<ConfirmDeleteModal
+  isOpen={isDeleteModalOpen}
+  title="Hapus Pesan Kontak"
+  itemName={messageToDelete ? `Pesan dari ${messageToDelete.name}: "${messageToDelete.subject}"` : ''}
+  message="Pesan kontak ini akan dihapus dari arsip pesan masuk admin."
+  {isDeleting}
+  onConfirm={confirmDelete}
+  onCancel={() => {
+    isDeleteModalOpen = false;
+    messageToDelete = null;
+  }}
+/>

@@ -41,6 +41,14 @@ func (h *PublicHandler) GetHome(c *fiber.Ctx) error {
 	var recentPhotos []models.MediaPhoto
 	database.DB.Preload("Category").Order("id DESC").Limit(8).Find(&recentPhotos)
 
+	// Site Settings
+	var settings []models.Setting
+	database.DB.Find(&settings)
+	settingMap := make(map[string]string)
+	for _, s := range settings {
+		settingMap[s.Key] = s.Value
+	}
+
 	// Quick Stats
 	stats := fiber.Map{
 		"santri_count":    "1.450+",
@@ -59,6 +67,7 @@ func (h *PublicHandler) GetHome(c *fiber.Ctx) error {
 		"testimonials":      testimonials,
 		"recent_photos":     recentPhotos,
 		"stats":             stats,
+		"settings":          settingMap,
 	})
 }
 

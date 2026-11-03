@@ -77,10 +77,9 @@
   <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-rose-500/15 blur-3xl pointer-events-none rounded-full"></div>
 
   <div class="max-w-6xl mx-auto space-y-4 relative z-10">
-    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-500/15 text-rose-300 text-xs font-bold border border-rose-500/30">
-      <Sparkles class="w-3.5 h-3.5 text-rose-400" />
-      <span>Arsip Audio Visual</span>
-    </div>
+    <p class="text-xs font-mono uppercase tracking-[0.25em] font-semibold text-rose-400">
+      Arsip Audio Visual
+    </p>
     <h1 class="font-display font-black text-3xl sm:text-5xl lg:text-6xl text-white tracking-tight">
       Galeri Video & Dokumentasi
     </h1>

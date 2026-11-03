@@ -21,6 +21,7 @@
     ExternalLink,
     Quote
   } from 'lucide-svelte';
+  import { siteSettings } from '$lib/stores/settings';
 
   let data = $state<HomeData | null>(null);
   let loading = $state(true);
@@ -48,8 +49,8 @@
 </script>
 
 <svelte:head>
-  <title>Pondok Pesantren Al-Hamid | Berakhlak, Unggul & Berdaya Saing Global</title>
-  <meta name="description" content="Pondok Pesantren Al-Hamid Cintamulya: Paduan harmoni antara tradisi luhur kitab kuning dan keunggulan sains modern (MTs, MA, MAI Kejuruan IT, Diniyah, PMQ)." />
+  <title>{$siteSettings.site_name || 'Pondok Pesantren Al-Hamid'} | {$siteSettings.site_tagline || 'Berakhlak, Unggul & Berdaya Saing Global'}</title>
+  <meta name="description" content={$siteSettings.site_description || 'Pondok Pesantren Al-Hamid Cintamulya: Paduan harmoni antara tradisi luhur kitab kuning dan keunggulan sains modern (MTs, MA, MAI Kejuruan IT, Diniyah, PMQ).'} />
 </svelte:head>
 
 <!-- ================= 1. HERO SECTION: CINEMATIC & ARCHITECTURAL ================= -->
@@ -78,12 +79,11 @@
     <!-- Hero Content Overlay -->
     <div class="relative z-20 max-w-7xl mx-auto px-4 sm:px-8 py-24 sm:py-32 w-full">
       <div class="max-w-3xl space-y-6">
-        <!-- Interactive Pill Tag -->
+        <!-- Editorial Eyebrow -->
         {#if data.banners[activeBannerIndex]?.badge}
-          <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-teal-500/15 border border-teal-400/30 text-teal-300 text-xs font-semibold backdrop-blur-xl shadow-lg shadow-teal-950/20 animate-in fade-in duration-300">
-            <span class="w-2 h-2 rounded-full bg-teal-400 animate-ping"></span>
-            <span>{data.banners[activeBannerIndex].badge}</span>
-          </div>
+          <p class="text-xs font-mono uppercase tracking-[0.25em] font-semibold text-teal-400">
+            {data.banners[activeBannerIndex].badge}
+          </p>
         {/if}
 
         <!-- Master Headline -->
@@ -128,9 +128,9 @@
     </div>
   {:else}
     <div class="relative z-20 max-w-7xl mx-auto px-4 sm:px-8 py-32 text-center">
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-500/20 text-teal-300 text-xs font-semibold mb-4">
+      <p class="text-xs font-mono uppercase tracking-[0.25em] font-semibold text-teal-400 mb-4">
         Pondok Pesantren Al-Hamid
-      </div>
+      </p>
       <h1 class="font-display font-black text-4xl sm:text-6xl lg:text-7xl text-white mb-6 tracking-tight">
         Menempa Akhlak, Mengukir Prestasi Masa Depan
       </h1>
@@ -203,9 +203,9 @@
         />
         <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
         <div class="absolute bottom-6 left-6 right-6 text-white space-y-1">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/20 text-teal-300 text-[11px] font-bold uppercase tracking-wider backdrop-blur-md">
+          <p class="text-[11px] font-mono uppercase tracking-widest font-semibold text-teal-300">
             Mursyid & Pengasuh Utama
-          </div>
+          </p>
           <div class="font-display font-extrabold text-2xl text-white">
             K.H. Ahmad Hamidurrohman
           </div>
@@ -229,10 +229,9 @@
 
     <!-- Narrative & Values -->
     <div class="lg:col-span-7 space-y-6">
-      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-50 border border-teal-200/60 text-teal-800 text-xs font-bold tracking-wide">
-        <Sparkles class="w-3.5 h-3.5 text-teal-600" />
-        <span>Visi Pendidikan Komprehensif</span>
-      </div>
+      <p class="text-xs font-mono uppercase tracking-[0.25em] font-bold text-teal-700">
+        Visi Pendidikan Komprehensif
+      </p>
 
       <h2 class="font-display font-black text-3xl sm:text-5xl text-slate-950 leading-[1.15] tracking-tight">
         Mencetak Generasi Intelektual Beradab & Berkecakapan Global
@@ -282,9 +281,9 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-8">
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
       <div class="space-y-3">
-        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-50 border border-teal-200/70 text-teal-800 text-xs font-bold">
+        <p class="text-xs font-mono uppercase tracking-[0.25em] font-bold text-teal-700">
           Ekosistem Pendidikan
-        </div>
+        </p>
         <h2 class="font-display font-black text-3xl sm:text-5xl text-slate-950 tracking-tight">
           Jenjang Formal & Non-Formal Terpadu
         </h2>
@@ -309,10 +308,12 @@
               <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent"></div>
               
               <div class="absolute top-4 left-4 right-4 flex items-center justify-between">
-                <span class="px-3 py-1 rounded-full text-[10px] font-black tracking-wider uppercase shadow-md {unit.type === 'formal' ? 'bg-indigo-600 text-white' : 'bg-teal-600 text-white'}">
-                  {unit.type === 'formal' ? 'Pendidikan Formal' : 'Pendidikan Non-Formal'}
+                <span class="text-[11px] font-mono font-bold tracking-wider uppercase text-white drop-shadow">
+                  {unit.type === 'formal' ? 'Pendidikan Formal' : 'Non-Formal'}
                 </span>
-                <span class="text-amber-300 text-xs font-bold drop-shadow">{unit.badge}</span>
+                {#if unit.badge}
+                  <span class="text-teal-300 text-xs font-mono font-medium drop-shadow">{unit.badge}</span>
+                {/if}
               </div>
 
               <div class="absolute bottom-3 left-4 right-4">
@@ -353,9 +354,9 @@
 <section class="py-24 max-w-7xl mx-auto px-4 sm:px-8">
   <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
     <div class="space-y-3">
-      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-50 border border-teal-200/70 text-teal-800 text-xs font-bold">
+      <p class="text-xs font-mono uppercase tracking-[0.25em] font-bold text-teal-700">
         Warta & Literasi
-      </div>
+      </p>
       <h2 class="font-display font-black text-3xl sm:text-5xl text-slate-950 tracking-tight">
         Kajian, Opini & Dinamika Santri
       </h2>
@@ -428,10 +429,9 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
       <!-- Achievements Showcase -->
       <div class="space-y-6">
-        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/15 text-amber-300 text-xs font-bold border border-amber-500/30">
-          <Trophy class="w-3.5 h-3.5 text-amber-400" />
-          <span>Prestasi Gemilang</span>
-        </div>
+        <p class="text-xs font-mono uppercase tracking-[0.25em] font-semibold text-amber-400">
+          Prestasi Gemilang
+        </p>
 
         <h2 class="font-display font-black text-3xl sm:text-5xl text-white tracking-tight">
           Rekam Jejak Juara di Panggung Nasional
@@ -474,10 +474,9 @@
 
       <!-- Facilities Grid -->
       <div class="space-y-6">
-        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/15 text-teal-300 text-xs font-bold border border-teal-500/30">
-          <Building2 class="w-3.5 h-3.5 text-teal-400" />
-          <span>Infrastruktur & Sarana</span>
-        </div>
+        <p class="text-xs font-mono uppercase tracking-[0.25em] font-semibold text-teal-400">
+          Infrastruktur & Sarana
+        </p>
 
         <h2 class="font-display font-black text-3xl sm:text-5xl text-white tracking-tight">
           Sarana Representatif untuk Kenyamanan Santri
@@ -523,9 +522,9 @@
 <!-- ================= 7. TESTIMONI & REPUTASI ================= -->
 <section class="py-24 max-w-7xl mx-auto px-4 sm:px-8">
   <div class="text-center max-w-2xl mx-auto space-y-3 mb-16">
-    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-50 border border-teal-200/70 text-teal-800 text-xs font-bold">
+    <p class="text-xs font-mono uppercase tracking-[0.25em] font-bold text-teal-700">
       Suara Nyata
-    </div>
+    </p>
     <h2 class="font-display font-black text-3xl sm:text-5xl text-slate-950 tracking-tight">
       Apa Kata Alumni & Wali Santri
     </h2>
@@ -569,9 +568,9 @@
 
   <div class="max-w-7xl mx-auto px-4 sm:px-8 relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
     <div class="space-y-3 text-center md:text-left">
-      <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-500/15 text-teal-300 text-xs font-bold border border-teal-500/30">
+      <p class="text-xs font-mono uppercase tracking-[0.25em] font-semibold text-teal-400">
         Penerimaan Santri Baru (PSB) 2026/2027
-      </div>
+      </p>
       <h2 class="font-display font-black text-3xl sm:text-5xl text-white tracking-tight">
         Siapkan Masa Depan Putra-Putri Anda
       </h2>

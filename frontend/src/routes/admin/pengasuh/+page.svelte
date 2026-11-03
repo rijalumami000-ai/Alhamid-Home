@@ -3,10 +3,18 @@
   import { api } from '$lib/api';
   import type { Caregiver } from '$lib/types';
   import { Plus, Edit2, Trash2, X, Users, BookOpen } from 'lucide-svelte';
+  import ConfirmDeleteModal from '$lib/components/ConfirmDeleteModal.svelte';
+  import DriveImageInput from '$lib/components/DriveImageInput.svelte';
 
   let list = $state<Caregiver[]>([]);
   let isModalOpen = $state(false);
   let editing = $state<Caregiver | null>(null);
+
+  // Delete modal state
+  let isDeleteModalOpen = $state(false);
+  let caregiverToDelete = $state<Caregiver | null>(null);
+  let isDeleting = $state(false);
+
   let form = $state({
     name: '',
     role_title: '',
@@ -68,14 +76,23 @@
     }
   }
 
-  async function handleDelete(id: number) {
-    if (confirm('Hapus data pengasuh ini?')) {
-      try {
-        await api.admin.deleteCaregiver(id);
-        await loadData();
-      } catch (err: any) {
-        alert(err.message || 'Gagal menghapus');
-      }
+  function promptDelete(item: Caregiver) {
+    caregiverToDelete = item;
+    isDeleteModalOpen = true;
+  }
+
+  async function confirmDelete() {
+    if (!caregiverToDelete) return;
+    isDeleting = true;
+    try {
+      await api.admin.deleteCaregiver(caregiverToDelete.id);
+      isDeleteModalOpen = false;
+      caregiverToDelete = null;
+      await loadData();
+    } catch (err: any) {
+      alert(err.message || 'Gagal menghapus data');
+    } finally {
+      isDeleting = false;
     }
   }
 
@@ -91,7 +108,7 @@
 <div class="space-y-6">
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
     <div>
-      <h1 class="font-serif-luxury font-bold text-2xl text-slate-900">
+      <h1 class="font-display font-black text-2xl text-slate-900 tracking-tight">
         Dewan Pengasuh & Masyayikh
       </h1>
       <p class="text-xs text-slate-500 mt-1">
@@ -100,46 +117,57 @@
     </div>
     <button
       onclick={openCreate}
-      class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold shadow-md transition"
+      class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold shadow-md transition active:scale-95"
     >
-      <Plus class="w-4 h-4" /> Tambah Pengasuh
+      <Plus class="w-4 h-4" /> Tambah Dewan Pengasuh
     </button>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    {#each list as c}
-      <div class="bg-white rounded-3xl border border-slate-200 p-6 flex flex-col justify-between shadow-sm space-y-4">
-        <div class="flex items-start gap-4">
-          <img
-            src={c.photo_url}
-            alt={c.name}
-            class="w-16 h-16 rounded-2xl object-cover border border-slate-200 shrink-0"
-          />
-          <div class="space-y-1">
-            <span class="text-[11px] font-bold text-emerald-700 uppercase">{c.role_title}</span>
-            <h2 class="font-bold text-base text-slate-900">{c.name}</h2>
-            <p class="text-xs text-slate-500 line-clamp-2">{c.bio}</p>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {#each list as item}
+      <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between">
+        <div class="p-6 space-y-4">
+          <div class="flex items-start gap-4">
+            <div class="w-20 h-20 rounded-2xl overflow-hidden bg-slate-900 shrink-0 border border-slate-200">
+              <img src={item.photo_url} alt={item.name} class="w-full h-full object-cover" />
+            </div>
+            <div class="space-y-1 min-w-0">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase {item.is_active ? 'bg-teal-100 text-teal-800' : 'bg-slate-200 text-slate-600'}">
+                {item.is_active ? 'Aktif' : 'Nonaktif'}
+              </span>
+              <h2 class="font-display font-bold text-base text-slate-900 truncate">{item.name}</h2>
+              <p class="text-xs text-teal-700 font-semibold">{item.role_title}</p>
+            </div>
           </div>
+
+          {#if item.bio}
+            <p class="text-xs text-slate-500 line-clamp-3 leading-relaxed">{item.bio}</p>
+          {/if}
+
+          {#if item.sanad_keilmuan}
+            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-[11px] text-slate-600 space-y-1">
+              <div class="font-bold text-slate-800 flex items-center gap-1">
+                <BookOpen class="w-3.5 h-3.5 text-teal-600" /> Sanad Keilmuan:
+              </div>
+              <p class="line-clamp-2">{item.sanad_keilmuan}</p>
+            </div>
+          {/if}
         </div>
 
-        {#if c.sanad_keilmuan}
-          <div class="bg-emerald-50/70 p-3 rounded-xl border border-emerald-100 text-xs text-slate-600">
-            <span class="font-bold text-emerald-800">Sanad:</span> {c.sanad_keilmuan}
-          </div>
-        {/if}
-
-        <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
-          <span class="text-xs text-slate-400 font-mono">Urutan: #{c.order}</span>
-          <div class="space-x-1">
+        <div class="p-4 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between">
+          <span class="text-xs text-slate-400 font-mono">Urutan #{item.order}</span>
+          <div class="flex items-center gap-1">
             <button
-              onclick={() => openEdit(c)}
-              class="p-1.5 rounded-lg text-slate-500 hover:text-emerald-700 hover:bg-emerald-50"
+              onclick={() => openEdit(item)}
+              class="p-2 rounded-xl text-slate-600 hover:text-teal-700 hover:bg-slate-100 transition"
+              title="Edit Data"
             >
               <Edit2 class="w-4 h-4" />
             </button>
             <button
-              onclick={() => handleDelete(c.id)}
-              class="p-1.5 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50"
+              onclick={() => promptDelete(item)}
+              class="p-2 rounded-xl text-slate-600 hover:text-rose-600 hover:bg-rose-50 transition"
+              title="Hapus Data"
             >
               <Trash2 class="w-4 h-4" />
             </button>
@@ -155,7 +183,7 @@
   <div class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-200 overflow-hidden">
       <div class="p-6 border-b border-slate-100 flex items-center justify-between">
-        <h2 class="font-serif-luxury font-bold text-lg text-slate-900">
+        <h2 class="font-display font-bold text-lg text-slate-900">
           {editing ? 'Edit Dewan Pengasuh' : 'Tambah Dewan Pengasuh'}
         </h2>
         <button onclick={() => (isModalOpen = false)}>
@@ -188,16 +216,12 @@
           />
         </div>
 
-        <div class="space-y-1">
-          <label for="c_photo" class="text-xs font-bold text-slate-700 uppercase">URL Foto</label>
-          <input
-            id="c_photo"
-            type="url"
-            bind:value={form.photo_url}
-            placeholder="https://..."
-            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium"
-          />
-        </div>
+        <DriveImageInput
+          id="c_photo"
+          label="Foto Pengasuh / Masyayikh"
+          bind:value={form.photo_url}
+          placeholder="https://drive.google.com/... atau https://..."
+        />
 
         <div class="space-y-1">
           <label for="c_bio" class="text-xs font-bold text-slate-700 uppercase">Biografi Singkat</label>
@@ -220,6 +244,22 @@
           ></textarea>
         </div>
 
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-1">
+            <label for="c_order" class="text-xs font-bold text-slate-700 uppercase">Urutan</label>
+            <input
+              id="c_order"
+              type="number"
+              bind:value={form.order}
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium"
+            />
+          </div>
+          <div class="flex items-center gap-2 pt-6">
+            <input id="c_active" type="checkbox" bind:checked={form.is_active} class="w-4 h-4 text-teal-600 rounded" />
+            <label for="c_active" class="text-xs font-bold text-slate-700">Aktif Tampil</label>
+          </div>
+        </div>
+
         <div class="pt-4 border-t border-slate-100 flex justify-end gap-2">
           <button
             type="button"
@@ -230,7 +270,7 @@
           </button>
           <button
             type="submit"
-            class="px-5 py-2 rounded-xl bg-emerald-800 text-white text-xs font-bold shadow-md"
+            class="px-5 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold shadow-md transition"
           >
             Simpan Data
           </button>
@@ -240,3 +280,16 @@
   </div>
 {/if}
 
+<!-- CONFIRM DELETE MODAL -->
+<ConfirmDeleteModal
+  isOpen={isDeleteModalOpen}
+  title="Hapus Dewan Pengasuh"
+  itemName={caregiverToDelete?.name}
+  message="Profil dewan pengasuh ini akan dihapus dari sistem dan halaman profil pesantren."
+  {isDeleting}
+  onConfirm={confirmDelete}
+  onCancel={() => {
+    isDeleteModalOpen = false;
+    caregiverToDelete = null;
+  }}
+/>

@@ -3,10 +3,18 @@
   import { api } from '$lib/api';
   import type { Testimonial } from '$lib/types';
   import { Plus, Edit2, Trash2, X, Star } from 'lucide-svelte';
+  import ConfirmDeleteModal from '$lib/components/ConfirmDeleteModal.svelte';
+  import DriveImageInput from '$lib/components/DriveImageInput.svelte';
 
   let list = $state<Testimonial[]>([]);
   let isModalOpen = $state(false);
   let editing = $state<Testimonial | null>(null);
+
+  // Delete modal state
+  let isDeleteModalOpen = $state(false);
+  let testimonialToDelete = $state<Testimonial | null>(null);
+  let isDeleting = $state(false);
+
   let form = $state({
     name: '',
     role: '',
@@ -68,14 +76,23 @@
     }
   }
 
-  async function handleDelete(id: number) {
-    if (confirm('Hapus testimoni ini?')) {
-      try {
-        await api.admin.deleteTestimonial(id);
-        await loadData();
-      } catch (err: any) {
-        alert(err.message || 'Gagal menghapus');
-      }
+  function promptDelete(t: Testimonial) {
+    testimonialToDelete = t;
+    isDeleteModalOpen = true;
+  }
+
+  async function confirmDelete() {
+    if (!testimonialToDelete) return;
+    isDeleting = true;
+    try {
+      await api.admin.deleteTestimonial(testimonialToDelete.id);
+      isDeleteModalOpen = false;
+      testimonialToDelete = null;
+      await loadData();
+    } catch (err: any) {
+      alert(err.message || 'Gagal menghapus testimoni');
+    } finally {
+      isDeleting = false;
     }
   }
 
@@ -91,7 +108,7 @@
 <div class="space-y-6">
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
     <div>
-      <h1 class="font-serif-luxury font-bold text-2xl text-slate-900">
+      <h1 class="font-display font-black text-2xl text-slate-900 tracking-tight">
         Testimoni Alumni & Wali Santri
       </h1>
       <p class="text-xs text-slate-500 mt-1">
@@ -100,7 +117,7 @@
     </div>
     <button
       onclick={openCreate}
-      class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold shadow-md transition"
+      class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold shadow-md transition active:scale-95"
     >
       <Plus class="w-4 h-4" /> Tambah Testimoni
     </button>
@@ -108,31 +125,41 @@
 
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     {#each list as item}
-      <div class="bg-white rounded-3xl border border-slate-200 p-6 flex flex-col justify-between shadow-sm space-y-4">
+      <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between space-y-4">
         <div class="space-y-3">
           <div class="flex items-center gap-1 text-amber-400">
             {#each Array(item.rating || 5) as _}
-              <Star class="w-4 h-4 fill-amber-400" />
+              <Star class="w-4 h-4 fill-amber-400 text-amber-400" />
             {/each}
           </div>
-          <p class="text-slate-600 text-xs sm:text-sm leading-relaxed italic">
+          <p class="text-xs text-slate-600 italic line-clamp-4 leading-relaxed">
             "{item.content}"
           </p>
         </div>
 
-        <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+        <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <img src={item.avatar_url} alt={item.name} class="w-10 h-10 rounded-full object-cover border border-emerald-600" />
+            <div class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden shrink-0">
+              <img src={item.avatar_url} alt={item.name} class="w-full h-full object-cover" />
+            </div>
             <div>
               <div class="font-bold text-xs text-slate-900">{item.name}</div>
-              <div class="text-[11px] text-slate-400">{item.role}</div>
+              <div class="text-[10px] text-slate-400">{item.role}</div>
             </div>
           </div>
           <div class="space-x-1">
-            <button onclick={() => openEdit(item)} class="p-1.5 rounded-lg text-slate-500 hover:text-emerald-700">
+            <button
+              onclick={() => openEdit(item)}
+              class="p-1.5 rounded-lg text-slate-500 hover:text-teal-700 hover:bg-slate-100 transition"
+              title="Edit Testimoni"
+            >
               <Edit2 class="w-4 h-4" />
             </button>
-            <button onclick={() => handleDelete(item.id)} class="p-1.5 rounded-lg text-slate-500 hover:text-red-600">
+            <button
+              onclick={() => promptDelete(item)}
+              class="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition"
+              title="Hapus Testimoni"
+            >
               <Trash2 class="w-4 h-4" />
             </button>
           </div>
@@ -147,7 +174,7 @@
   <div class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 overflow-hidden">
       <div class="p-6 border-b border-slate-100 flex items-center justify-between">
-        <h2 class="font-serif-luxury font-bold text-lg text-slate-900">
+        <h2 class="font-display font-bold text-lg text-slate-900">
           {editing ? 'Edit Testimoni' : 'Tambah Testimoni'}
         </h2>
         <button onclick={() => (isModalOpen = false)}>
@@ -155,7 +182,7 @@
         </button>
       </div>
 
-      <form onsubmit={handleSave} class="p-6 space-y-4">
+      <form onsubmit={handleSave} class="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
         <div class="space-y-1">
           <label for="t_name" class="text-xs font-bold text-slate-700 uppercase">Nama Lengkap *</label>
           <input
@@ -179,15 +206,12 @@
           />
         </div>
 
-        <div class="space-y-1">
-          <label for="t_avatar" class="text-xs font-bold text-slate-700 uppercase">URL Foto Avatar</label>
-          <input
-            id="t_avatar"
-            type="url"
-            bind:value={form.avatar_url}
-            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium"
-          />
-        </div>
+        <DriveImageInput
+          id="t_avatar"
+          label="Foto Avatar / Profil"
+          bind:value={form.avatar_url}
+          placeholder="https://drive.google.com/... atau https://..."
+        />
 
         <div class="space-y-1">
           <label for="t_content" class="text-xs font-bold text-slate-700 uppercase">Isi Kutipan / Testimoni *</label>
@@ -210,7 +234,7 @@
           </button>
           <button
             type="submit"
-            class="px-5 py-2 rounded-xl bg-emerald-800 text-white text-xs font-bold shadow-md"
+            class="px-5 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold shadow-md transition"
           >
             Simpan Testimoni
           </button>
@@ -220,3 +244,16 @@
   </div>
 {/if}
 
+<!-- CONFIRM DELETE MODAL -->
+<ConfirmDeleteModal
+  isOpen={isDeleteModalOpen}
+  title="Hapus Testimoni"
+  itemName={testimonialToDelete ? `${testimonialToDelete.name} (${testimonialToDelete.role})` : ''}
+  message="Kutipan testimoni ini akan dihapus dari daftar ulasan beranda dan profil."
+  {isDeleting}
+  onConfirm={confirmDelete}
+  onCancel={() => {
+    isDeleteModalOpen = false;
+    testimonialToDelete = null;
+  }}
+/>

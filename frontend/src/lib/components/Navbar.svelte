@@ -23,6 +23,7 @@
     Shield
   } from 'lucide-svelte';
   import SearchModal from './SearchModal.svelte';
+  import { siteSettings } from '$lib/stores/settings';
 
   let isScrolled = $state(false);
   let mobileMenuOpen = $state(false);
@@ -57,21 +58,21 @@
     <div class="flex items-center gap-6">
       <div class="flex items-center gap-2 text-slate-400 hover:text-white transition">
         <MapPin class="w-3.5 h-3.5 text-teal-400" />
-        <span>Cintamulya, Candipuro, Lampung Selatan</span>
+        <span class="line-clamp-1">{$siteSettings.site_address || 'Cintamulya, Candipuro, Lampung Selatan'}</span>
       </div>
       <div class="flex items-center gap-2 text-slate-400 hover:text-white transition">
         <Mail class="w-3.5 h-3.5 text-teal-400" />
-        <span>sekretariat@alhamid.sch.id</span>
+        <span>{$siteSettings.site_email || 'sekretariat@alhamid.sch.id'}</span>
       </div>
       <div class="flex items-center gap-2 text-slate-400 hover:text-white transition">
         <Phone class="w-3.5 h-3.5 text-teal-400" />
-        <span>+62 812-3456-7890</span>
+        <span>{$siteSettings.site_phone || '+62 812-3456-7890'}</span>
       </div>
     </div>
     <div class="flex items-center gap-4">
-      <div class="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 text-[11px] font-semibold">
-        <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse"></span>
-        <span>PSB 2026/2027 Telah Dibuka</span>
+      <div class="flex items-center gap-2 text-[11px] font-medium text-teal-300">
+        <span class="w-1.5 h-1.5 rounded-full bg-teal-400"></span>
+        <span>Penerimaan Santri Baru (PSB) Telah Dibuka</span>
       </div>
       <a
         href="/admin/login"

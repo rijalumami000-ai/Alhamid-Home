@@ -25,10 +25,9 @@
   <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-amber-500/15 blur-3xl pointer-events-none rounded-full"></div>
 
   <div class="max-w-6xl mx-auto space-y-4 relative z-10">
-    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/15 text-amber-300 text-xs font-bold border border-amber-500/30">
-      <Trophy class="w-3.5 h-3.5 text-amber-400" />
-      <span>Rekam Jejak Kejuaraan</span>
-    </div>
+    <p class="text-xs font-mono uppercase tracking-[0.25em] font-semibold text-amber-400">
+      Rekam Jejak Kejuaraan
+    </p>
     <h1 class="font-display font-black text-3xl sm:text-5xl lg:text-6xl text-white tracking-tight">
       Prestasi Santri & Lembaga
     </h1>

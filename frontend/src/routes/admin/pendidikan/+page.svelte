@@ -3,12 +3,20 @@
   import { api } from '$lib/api';
   import type { EducationUnit } from '$lib/types';
   import { Plus, Edit2, Trash2, X, ExternalLink, GraduationCap } from 'lucide-svelte';
+  import ConfirmDeleteModal from '$lib/components/ConfirmDeleteModal.svelte';
+  import DriveImageInput from '$lib/components/DriveImageInput.svelte';
 
   let units = $state<EducationUnit[]>([]);
   let loading = $state(true);
 
   let isModalOpen = $state(false);
   let editingUnit = $state<EducationUnit | null>(null);
+
+  // Delete modal state
+  let isDeleteModalOpen = $state(false);
+  let unitToDelete = $state<EducationUnit | null>(null);
+  let isDeleting = $state(false);
+
   let form = $state({
     name: '',
     slug: '',
@@ -94,14 +102,23 @@
     }
   }
 
-  async function handleDelete(id: number) {
-    if (confirm('Hapus unit pendidikan ini?')) {
-      try {
-        await api.admin.deleteEducationUnit(id);
-        await loadData();
-      } catch (err: any) {
-        alert(err.message || 'Gagal menghapus unit pendidikan');
-      }
+  function promptDelete(u: EducationUnit) {
+    unitToDelete = u;
+    isDeleteModalOpen = true;
+  }
+
+  async function confirmDelete() {
+    if (!unitToDelete) return;
+    isDeleting = true;
+    try {
+      await api.admin.deleteEducationUnit(unitToDelete.id);
+      isDeleteModalOpen = false;
+      unitToDelete = null;
+      await loadData();
+    } catch (err: any) {
+      alert(err.message || 'Gagal menghapus unit pendidikan');
+    } finally {
+      isDeleting = false;
     }
   }
 
@@ -117,7 +134,7 @@
 <div class="space-y-6">
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
     <div>
-      <h1 class="font-serif-luxury font-bold text-2xl text-slate-900">
+      <h1 class="font-display font-black text-2xl text-slate-900 tracking-tight">
         Unit Pendidikan (Formal & Non-Formal)
       </h1>
       <p class="text-xs text-slate-500 mt-1">
@@ -126,7 +143,7 @@
     </div>
     <button
       onclick={openCreate}
-      class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold shadow-md transition"
+      class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold shadow-md transition active:scale-95"
     >
       <Plus class="w-4 h-4" /> Tambah Unit Pendidikan
     </button>
@@ -135,7 +152,7 @@
   <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
     <div class="overflow-x-auto">
       <table class="w-full text-left text-xs">
-        <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
+        <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
           <tr>
             <th class="p-4">Nama Unit</th>
             <th class="p-4">Tipe</th>
@@ -148,43 +165,58 @@
         <tbody class="divide-y divide-slate-100">
           {#each units as u}
             <tr class="hover:bg-slate-50/70 transition">
-              <td class="p-4">
-                <div class="font-bold text-slate-900 text-sm">{u.name}</div>
-                <div class="text-[11px] text-slate-400 font-mono">/pendidikan/{u.slug}</div>
+              <td class="p-4 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-slate-100 overflow-hidden shrink-0 border border-slate-200">
+                  {#if u.hero_image}
+                    <img src={u.hero_image} alt={u.name} class="w-full h-full object-cover" />
+                  {:else}
+                    <div class="w-full h-full flex items-center justify-center text-teal-700 font-bold">
+                      <GraduationCap class="w-5 h-5" />
+                    </div>
+                  {/if}
+                </div>
+                <div>
+                  <div class="font-bold text-slate-900">{u.name}</div>
+                  <div class="text-[11px] text-slate-400 font-mono">/{u.slug}</div>
+                </div>
               </td>
               <td class="p-4">
-                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase {u.type === 'formal' ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800'}">
-                  {u.type === 'formal' ? 'Formal' : 'Non-Formal'}
+                <span class="px-2 py-0.5 rounded font-semibold text-[10px] {u.type === 'formal' ? 'bg-blue-50 text-blue-700' : 'bg-amber-50 text-amber-700'}">
+                  {u.type === 'formal' ? 'Formal (Kemenag)' : 'Non-Formal (Pesantren)'}
                 </span>
               </td>
-              <td class="p-4 text-slate-700 font-medium">{u.badge}</td>
-              <td class="p-4 text-slate-600 font-medium">{u.headmaster_name || '-'}</td>
+              <td class="p-4 font-medium text-slate-700">{u.badge || '-'}</td>
+              <td class="p-4 text-slate-600">{u.headmaster_name || '-'}</td>
               <td class="p-4">
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase {u.is_active ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'}">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {u.is_active ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'}">
                   {u.is_active ? 'Aktif' : 'Nonaktif'}
                 </span>
               </td>
-              <td class="p-4 text-right space-x-1">
-                <a
-                  href="/pendidikan/{u.slug}"
-                  target="_blank"
-                  class="p-1.5 rounded-lg text-slate-400 hover:text-emerald-700 hover:bg-slate-100 inline-block"
-                  title="Buka Laman Publik"
-                >
-                  <ExternalLink class="w-4 h-4" />
-                </a>
-                <button
-                  onclick={() => openEdit(u)}
-                  class="p-1.5 rounded-lg text-slate-500 hover:text-emerald-700 hover:bg-emerald-50 transition"
-                >
-                  <Edit2 class="w-4 h-4" />
-                </button>
-                <button
-                  onclick={() => handleDelete(u.id)}
-                  class="p-1.5 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 transition"
-                >
-                  <Trash2 class="w-4 h-4" />
-                </button>
+              <td class="p-4 text-right">
+                <div class="inline-flex items-center gap-1">
+                  <a
+                    href="/pendidikan/{u.slug}"
+                    target="_blank"
+                    class="p-1.5 rounded-lg text-slate-500 hover:text-teal-700 hover:bg-slate-100 transition"
+                    title="Pratinjau"
+                  >
+                    <ExternalLink class="w-4 h-4" />
+                  </a>
+                  <button
+                    onclick={() => openEdit(u)}
+                    class="p-1.5 rounded-lg text-slate-500 hover:text-teal-700 hover:bg-slate-100 transition"
+                    title="Edit Unit"
+                  >
+                    <Edit2 class="w-4 h-4" />
+                  </button>
+                  <button
+                    onclick={() => promptDelete(u)}
+                    class="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition"
+                    title="Hapus Unit"
+                  >
+                    <Trash2 class="w-4 h-4" />
+                  </button>
+                </div>
               </td>
             </tr>
           {/each}
@@ -194,12 +226,12 @@
   </div>
 </div>
 
-<!-- FORM MODAL -->
+<!-- MODAL FORM -->
 {#if isModalOpen}
   <div class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-3xl rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
       <div class="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-        <h2 class="font-serif-luxury font-bold text-xl text-slate-900">
+        <h2 class="font-display font-bold text-xl text-slate-900">
           {editingUnit ? 'Edit Unit Pendidikan' : 'Tambah Unit Pendidikan'}
         </h2>
         <button onclick={() => (isModalOpen = false)}>
@@ -267,16 +299,12 @@
           />
         </div>
 
-        <div class="space-y-1">
-          <label for="u_img" class="text-xs font-bold text-slate-700 uppercase">URL Hero Image</label>
-          <input
-            id="u_img"
-            type="url"
-            bind:value={form.hero_image}
-            placeholder="https://..."
-            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium"
-          />
-        </div>
+        <DriveImageInput
+          id="u_img"
+          label="Hero Image / Foto Sampul Unit"
+          bind:value={form.hero_image}
+          placeholder="https://drive.google.com/... atau https://..."
+        />
 
         <div class="space-y-1">
           <label for="u_short" class="text-xs font-bold text-slate-700 uppercase">Deskripsi Singkat (Ringkasan)</label>
@@ -289,10 +317,10 @@
         </div>
 
         <div class="space-y-1">
-          <label for="u_full" class="text-xs font-bold text-slate-700 uppercase">Deskripsi Lengkap Program</label>
+          <label for="u_full" class="text-xs font-bold text-slate-700 uppercase">Deskripsi Lengkap / Profil Unit</label>
           <textarea
             id="u_full"
-            rows="5"
+            rows="4"
             bind:value={form.full_desc}
             class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium"
           ></textarea>
@@ -329,7 +357,7 @@
           </button>
           <button
             type="submit"
-            class="px-6 py-2.5 rounded-xl bg-emerald-800 text-white text-xs font-bold shadow-md"
+            class="px-6 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold shadow-md transition"
           >
             Simpan Unit
           </button>
@@ -339,3 +367,16 @@
   </div>
 {/if}
 
+<!-- CONFIRM DELETE MODAL -->
+<ConfirmDeleteModal
+  isOpen={isDeleteModalOpen}
+  title="Hapus Unit Pendidikan"
+  itemName={unitToDelete?.name}
+  message="Unit pendidikan ini akan dihapus dari daftar akademik website."
+  {isDeleting}
+  onConfirm={confirmDelete}
+  onCancel={() => {
+    isDeleteModalOpen = false;
+    unitToDelete = null;
+  }}
+/>

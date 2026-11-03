@@ -1,11 +1,18 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { api } from '$lib/api';
-  import { Settings, Save, CheckCircle2, Globe, Phone, Share2, BookOpen } from 'lucide-svelte';
+  import { Settings, Save, CheckCircle2, Globe, Phone, Share2, BookOpen, Type, Check, Sparkles } from 'lucide-svelte';
+  import { FONT_PRESETS, applyFontPreset, getSavedFontPresetId } from '$lib/fonts';
+  import { updateLocalSettings } from '$lib/stores/settings';
 
   let settings = $state<Record<string, string>>({});
   let loading = $state(true);
   let savedSuccess = $state(false);
+
+  function selectFont(presetId: string) {
+    settings['site_font_preset'] = presetId;
+    applyFontPreset(presetId);
+  }
 
   async function loadData() {
     try {
@@ -14,7 +21,11 @@
       for (const item of list) {
         map[item.key] = item.value;
       }
+      if (!map['site_font_preset']) {
+        map['site_font_preset'] = getSavedFontPresetId() || 'architectural';
+      }
       settings = map;
+      applyFontPreset(settings['site_font_preset']);
     } catch (e) {
       console.error(e);
     } finally {
@@ -27,6 +38,10 @@
     savedSuccess = false;
     try {
       await api.admin.updateSettings(settings);
+      updateLocalSettings(settings);
+      if (settings['site_font_preset']) {
+        applyFontPreset(settings['site_font_preset']);
+      }
       savedSuccess = true;
       setTimeout(() => (savedSuccess = false), 3500);
     } catch (err: any) {
@@ -98,7 +113,74 @@
       </div>
     </div>
 
-    <!-- SECTION 2: KONTAK & ALAMAT -->
+    <!-- SECTION 2: TIPOGRAFI & GAYA FONT WEBSITE -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+        <div class="text-xs font-bold uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
+          <Type class="w-4 h-4" /> Tipografi & Presensi Font Global
+        </div>
+        <span class="text-[11px] text-slate-500">
+          Pilihan langsung mengubah gaya tipografi di seluruh halaman publik dan CMS
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {#each FONT_PRESETS as preset}
+          {@const isSelected = (settings['site_font_preset'] || 'architectural') === preset.id}
+          <div
+            role="button"
+            tabindex="0"
+            onclick={() => selectFont(preset.id)}
+            onkeydown={(e) => e.key === 'Enter' && selectFont(preset.id)}
+            class="text-left p-5 rounded-2xl border-2 transition-all cursor-pointer relative flex flex-col justify-between space-y-4 {isSelected ? 'border-emerald-700 bg-emerald-50/40 shadow-md ring-2 ring-emerald-600/20' : 'border-slate-200/80 bg-slate-50/50 hover:border-slate-300 hover:bg-white'}"
+          >
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] font-mono uppercase tracking-widest font-semibold px-2 py-0.5 rounded-md {isSelected ? 'bg-emerald-700 text-white' : 'bg-slate-200 text-slate-700'}">
+                  {preset.category}
+                </span>
+                {#if isSelected}
+                  <span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-800">
+                    <Check class="w-3.5 h-3.5" /> Aktif
+                  </span>
+                {/if}
+              </div>
+
+              <div>
+                <h3 class="font-bold text-base text-slate-900" style="font-family: {preset.fontDisplayCss};">
+                  {preset.name}
+                </h3>
+                <p class="text-xs text-slate-500 mt-0.5">
+                  {preset.tagline}
+                </p>
+              </div>
+
+              <!-- Specimen Details -->
+              <div class="pt-2 border-t border-slate-200/60 text-[11px] text-slate-600 space-y-1 font-mono">
+                <div><span class="text-slate-400">Headings:</span> <strong class="text-slate-800">{preset.headingFont}</strong></div>
+                <div><span class="text-slate-400">Body:</span> <strong class="text-slate-800">{preset.bodyFont}</strong></div>
+                <div><span class="text-slate-400">Editorial:</span> <strong class="text-slate-800">{preset.editorialFont}</strong></div>
+              </div>
+            </div>
+
+            <!-- Live Sample Preview -->
+            <div class="p-3.5 rounded-xl bg-white border border-slate-200/70 shadow-2xs space-y-1.5">
+              <div class="text-sm font-black text-slate-900 leading-snug" style="font-family: {preset.fontDisplayCss};">
+                Pondok Pesantren Al-Hamid
+              </div>
+              <div class="text-xs text-slate-600 line-clamp-2 leading-relaxed" style="font-family: {preset.fontBodyCss};">
+                {preset.previewQuote}
+              </div>
+              <div class="text-[11px] italic text-slate-500" style="font-family: {preset.fontEditorialCss};">
+                "Kearifan turats, kemajuan sains peradaban."
+              </div>
+            </div>
+          </div>
+        {/each}
+      </div>
+    </div>
+
+    <!-- SECTION 3: KONTAK & ALAMAT -->
     <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
       <div class="text-xs font-bold uppercase tracking-wider text-emerald-800 flex items-center gap-1.5 pb-2 border-b border-slate-100">
         <Phone class="w-4 h-4" /> Kontak & Lokasi Kampus

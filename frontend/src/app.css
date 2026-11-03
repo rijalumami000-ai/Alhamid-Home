@@ -15,6 +15,36 @@
     --color-brand-amber: #f59e0b;
   }
 
+  html[data-font="architectural"] {
+    --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-editorial: 'Newsreader', Georgia, serif;
+  }
+
+  html[data-font="prestige"] {
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-editorial: 'Playfair Display', Georgia, serif;
+  }
+
+  html[data-font="neohumanist"] {
+    --font-display: 'Space Grotesk', -apple-system, sans-serif;
+    --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-editorial: 'Lora', Georgia, serif;
+  }
+
+  html[data-font="swiss"] {
+    --font-display: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-editorial: 'Fraunces', Georgia, serif;
+  }
+
+  html[data-font="monolith"] {
+    --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-body: 'Urbanist', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-editorial: 'Instrument Serif', Georgia, serif;
+  }
+
   html {
     scroll-behavior: smooth;
     font-family: var(--font-body);

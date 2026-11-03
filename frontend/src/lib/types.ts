@@ -164,6 +164,7 @@ export interface HomeData {
     alumni_count: string;
     prestasi_count: string;
   };
+  settings?: Record<string, string>;
 }
 
 export interface SearchResult {
