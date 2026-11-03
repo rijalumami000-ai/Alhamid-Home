@@ -46,54 +46,54 @@
 
 {#if loading}
   <div class="py-32 text-center text-slate-400">
-    <div class="animate-spin w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+    <div class="animate-spin w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full mx-auto mb-4"></div>
     Memuat informasi unit pendidikan...
   </div>
 {:else if errorMsg || !unit}
   <div class="py-32 text-center max-w-md mx-auto px-4 space-y-4">
-    <h1 class="text-2xl font-bold text-slate-800">Unit Pendidikan Tidak Ditemukan</h1>
+    <h1 class="text-2xl font-display font-black text-slate-800">Unit Pendidikan Tidak Ditemukan</h1>
     <p class="text-sm text-slate-500">Laman yang Anda tuju mungkin telah dipindahkan atau belum tersedia.</p>
-    <a href="/pendidikan" class="inline-flex px-6 py-2.5 rounded-xl bg-emerald-800 text-white font-semibold text-sm">
+    <a href="/pendidikan" class="inline-flex px-6 py-2.5 rounded-full bg-slate-900 text-white font-bold text-xs uppercase tracking-wider">
       Kembali ke Daftar Pendidikan
     </a>
   </div>
 {:else}
   <!-- Hero Section -->
-  <section class="relative min-h-[420px] flex items-center bg-slate-950 text-white overflow-hidden">
+  <section class="relative min-h-[460px] flex items-center bg-[#090D16] text-white overflow-hidden border-b border-slate-800/80">
     <div class="absolute inset-0">
       <img
         src={unit.hero_image}
         alt={unit.name}
-        class="w-full h-full object-cover"
+        class="w-full h-full object-cover opacity-35 mix-blend-luminosity"
       />
-      <div class="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/80 to-transparent"></div>
-      <div class="absolute inset-0 bg-emerald-950/40 mix-blend-multiply"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-[#090D16] via-[#090D16]/85 to-transparent"></div>
+      <div class="absolute inset-0 bg-grid-dark opacity-30 pointer-events-none"></div>
     </div>
 
     <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-8 py-20 w-full space-y-4">
       <div class="flex flex-wrap items-center gap-3">
-        <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm {unit.type === 'formal' ? 'bg-blue-600 text-white' : 'bg-emerald-700 text-white'}">
+        <span class="px-3.5 py-1 rounded-full text-[11px] font-black uppercase tracking-wider shadow-sm {unit.type === 'formal' ? 'bg-indigo-600 text-white' : 'bg-teal-600 text-white'}">
           {unit.type === 'formal' ? 'Pendidikan Formal' : 'Pendidikan Non-Formal'}
         </span>
         {#if unit.badge}
-          <span class="px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 text-xs font-semibold backdrop-blur-md">
+          <span class="px-3.5 py-1 rounded-full bg-amber-400/15 text-amber-300 border border-amber-400/30 text-xs font-bold backdrop-blur-md">
             {unit.badge}
           </span>
         {/if}
       </div>
 
-      <h1 class="font-serif-luxury font-bold text-3xl sm:text-5xl lg:text-6xl text-white tracking-tight">
+      <h1 class="font-display font-black text-3xl sm:text-5xl lg:text-6xl text-white tracking-tight">
         {unit.name}
       </h1>
 
-      <p class="text-base sm:text-lg text-emerald-100/90 max-w-2xl">
+      <p class="text-base sm:text-lg text-slate-300 max-w-2xl font-normal leading-relaxed">
         {unit.tagline}
       </p>
 
       <div class="pt-4 flex items-center gap-4">
         <a
           href="/kontak"
-          class="px-7 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-sm shadow-lg transition"
+          class="px-8 py-3.5 rounded-full bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-slate-950 font-display font-black text-xs uppercase tracking-wider shadow-lg hover:scale-105 active:scale-95 transition"
         >
           Daftar ke {unit.name}
         </a>
@@ -102,19 +102,19 @@
   </section>
 
   <!-- Content Body -->
-  <div class="max-w-6xl mx-auto px-4 sm:px-8 py-16">
+  <div class="max-w-6xl mx-auto px-4 sm:px-8 py-20">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
       <!-- Main Column -->
       <div class="lg:col-span-8 space-y-12">
         <!-- Gambaran Umum -->
         <div class="space-y-4">
-          <div class="text-xs font-bold uppercase tracking-wider text-emerald-700 flex items-center gap-1.5">
+          <div class="text-xs font-black uppercase tracking-widest text-teal-700 flex items-center gap-1.5">
             <BookOpen class="w-4 h-4" /> Gambaran Umum Program
           </div>
-          <h2 class="font-serif-luxury font-bold text-2xl sm:text-3xl text-slate-900">
+          <h2 class="font-display font-black text-2xl sm:text-3xl text-slate-950 tracking-tight">
             Membangun Karakter & Kapasitas Intelektual
           </h2>
-          <div class="text-slate-700 leading-relaxed text-base whitespace-pre-line bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm">
+          <div class="text-slate-600 leading-relaxed text-base whitespace-pre-line bg-white p-8 sm:p-10 rounded-3xl border border-slate-200/80 shadow-sm">
             {unit.full_desc}
           </div>
         </div>
@@ -122,14 +122,15 @@
         <!-- Kurikulum & Kitab / Pembelajaran -->
         {#if unit.curriculum}
           <div class="space-y-4">
-            <div class="text-xs font-bold uppercase tracking-wider text-emerald-700 flex items-center gap-1.5">
-              <ClipboardList class="w-4 h-4" /> Kurikulum & Mata Pelajaran / Kitab
+            <div class="text-xs font-black uppercase tracking-widest text-teal-700 flex items-center gap-1.5">
+              <ClipboardList class="w-4 h-4" /> Kurikulum & Silabus Pembelajaran
             </div>
-            <h2 class="font-serif-luxury font-bold text-2xl sm:text-3xl text-slate-900">
-              Struktur Pembelajaran
+            <h2 class="font-display font-black text-2xl sm:text-3xl text-slate-950 tracking-tight">
+              Struktur Kurikulum Terpadu
             </h2>
-            <div class="bg-emerald-950 text-emerald-50 p-6 sm:p-8 rounded-3xl border border-emerald-900 shadow-lg space-y-4 text-sm sm:text-base leading-relaxed whitespace-pre-line">
-              {unit.curriculum}
+            <div class="bg-[#090D16] text-slate-200 p-8 sm:p-10 rounded-3xl border border-slate-800 shadow-xl space-y-4 text-sm sm:text-base leading-relaxed whitespace-pre-line relative overflow-hidden">
+              <div class="absolute inset-0 bg-grid-dark opacity-20 pointer-events-none"></div>
+              <div class="relative z-10">{unit.curriculum}</div>
             </div>
           </div>
         {/if}
@@ -137,80 +138,59 @@
         <!-- Persyaratan Masuk -->
         {#if unit.requirements}
           <div class="space-y-4">
-            <div class="text-xs font-bold uppercase tracking-wider text-emerald-700 flex items-center gap-1.5">
-              <ShieldCheck class="w-4 h-4" /> Persyaratan Pendaftaran
+            <div class="text-xs font-black uppercase tracking-widest text-teal-700 flex items-center gap-1.5">
+              <CheckCircle2 class="w-4 h-4" /> Persyaratan & Alur Masuk
             </div>
-            <h2 class="font-serif-luxury font-bold text-2xl sm:text-3xl text-slate-900">
-              Syarat & Prosedur Penerimaan
+            <h2 class="font-display font-black text-2xl sm:text-3xl text-slate-950 tracking-tight">
+              Kriteria Penerimaan Santri Baru
             </h2>
-            <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-3 text-slate-700 text-sm sm:text-base leading-relaxed whitespace-pre-line">
+            <div class="bg-white p-8 sm:p-10 rounded-3xl border border-slate-200/80 shadow-sm text-slate-600 text-sm sm:text-base leading-relaxed whitespace-pre-line">
               {unit.requirements}
             </div>
           </div>
         {/if}
       </div>
 
-      <!-- Sidebar Column -->
-      <div class="lg:col-span-4 space-y-8">
-        <!-- Pimpinan Unit Card -->
-        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-md space-y-4 text-center">
-          <div class="w-24 h-24 rounded-full overflow-hidden mx-auto bg-slate-100 border-2 border-emerald-600 shadow-md">
-            <img
-              src={unit.headmaster_photo || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80'}
-              alt={unit.headmaster_name}
-              class="w-full h-full object-cover"
-            />
-          </div>
-          <div>
-            <div class="text-xs text-slate-400 font-semibold uppercase tracking-wider">
-              {unit.type === 'formal' ? 'Kepala Madrasah' : 'Kepala Pengasuh'}
+      <!-- Sidebar -->
+      <div class="lg:col-span-4 space-y-6">
+        <!-- Kepala Madrasah / Pimpinan Unit -->
+        <div class="bg-white rounded-3xl border border-slate-200/80 p-7 shadow-sm space-y-4">
+          <div class="text-xs font-black uppercase tracking-widest text-teal-700">Pimpinan Lembaga</div>
+          <div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center font-display font-black text-xl shrink-0">
+              {unit.headmaster_name.charAt(0)}
             </div>
-            <h3 class="font-serif-luxury font-bold text-lg text-slate-900 mt-0.5">
-              {unit.headmaster_name}
-            </h3>
-          </div>
-          <div class="pt-3 border-t border-slate-100">
-            <a
-              href="/kontak"
-              class="w-full py-2.5 px-4 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white font-semibold text-xs transition block"
-            >
-              Konsultasi Pendaftaran
-            </a>
+            <div>
+              <h3 class="font-display font-bold text-base text-slate-950 leading-snug">{unit.headmaster_name}</h3>
+              <div class="text-xs text-slate-500 mt-0.5">Kepala / Mudir Unit</div>
+            </div>
           </div>
         </div>
 
-        <!-- Fasilitas Khusus Unit -->
-        {#if unit.facilities_list}
-          <div class="bg-emerald-50/70 rounded-3xl p-6 border border-emerald-100 space-y-3">
-            <div class="text-xs font-bold uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
-              <Building2 class="w-4 h-4" /> Sarana Pendukung
-            </div>
-            <p class="text-xs text-slate-700 leading-relaxed whitespace-pre-line">
-              {unit.facilities_list}
-            </p>
+        <!-- Quick Contacts & PSB CTA Card -->
+        <div class="bg-gradient-to-br from-[#090D16] to-slate-950 text-white rounded-3xl p-7 border border-slate-800 space-y-4 relative overflow-hidden">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-500/20 text-teal-300 text-xs font-bold">
+            <Sparkles class="w-3.5 h-3.5 text-teal-400" />
+            <span>Pendaftaran 2026/2027</span>
           </div>
-        {/if}
-
-        <!-- Quick Links to other units -->
-        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-3">
-          <div class="text-xs font-bold uppercase tracking-wider text-slate-500">
-            Unit Pendidikan Lainnya
-          </div>
-          <div class="space-y-1.5">
-            <a href="/pendidikan/madrasah-diniyah-alhamid" class="block p-2 rounded-xl text-xs font-medium text-slate-700 hover:text-emerald-700 hover:bg-emerald-50 transition">
-              Madrasah Diniyah Al-Hamid
+          <h3 class="font-display font-black text-xl text-white tracking-tight">Konsultasi Pendaftaran</h3>
+          <p class="text-xs text-slate-400 leading-relaxed font-normal">
+            Dapatkan informasi lengkap mengenai kurikulum, asrama, dan beasiswa pendidikan {unit.name}.
+          </p>
+          <div class="pt-2 flex flex-col gap-2.5">
+            <a
+              href="/kontak"
+              class="w-full text-center py-3 rounded-full bg-teal-500 hover:bg-teal-400 text-slate-950 font-display font-bold text-xs uppercase tracking-wider shadow-md transition"
+            >
+              Formulir Pendaftaran Online
             </a>
-            <a href="/pendidikan/pmq-alhamid" class="block p-2 rounded-xl text-xs font-medium text-slate-700 hover:text-emerald-700 hover:bg-emerald-50 transition">
-              PMQ (Pendidikan Murottilil Qur'an)
-            </a>
-            <a href="/pendidikan/mts-cintamulya" class="block p-2 rounded-xl text-xs font-medium text-slate-700 hover:text-emerald-700 hover:bg-emerald-50 transition">
-              MTs Cintamulya
-            </a>
-            <a href="/pendidikan/ma-cintamulya" class="block p-2 rounded-xl text-xs font-medium text-slate-700 hover:text-emerald-700 hover:bg-emerald-50 transition">
-              MA Cintamulya
-            </a>
-            <a href="/pendidikan/mai-cintamulya" class="block p-2 rounded-xl text-xs font-medium text-slate-700 hover:text-emerald-700 hover:bg-emerald-50 transition">
-              MAI Cintamulya
+            <a
+              href="https://wa.me/6281234567890"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="w-full text-center py-3 rounded-full bg-white/10 hover:bg-white/15 text-white font-display font-bold text-xs tracking-wider border border-white/20 transition"
+            >
+              Chat WhatsApp Sekretariat
             </a>
           </div>
         </div>

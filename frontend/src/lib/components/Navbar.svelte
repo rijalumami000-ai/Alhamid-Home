@@ -12,7 +12,15 @@
     Phone,
     Mail,
     MapPin,
-    ArrowRight
+    ArrowRight,
+    Trophy,
+    Building2,
+    Heart,
+    Users,
+    Compass,
+    Image,
+    Video,
+    Shield
   } from 'lucide-svelte';
   import SearchModal from './SearchModal.svelte';
 
@@ -27,7 +35,7 @@
 
   onMount(() => {
     const handleScroll = () => {
-      isScrolled = window.scrollY > 20;
+      isScrolled = window.scrollY > 15;
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -43,64 +51,68 @@
 
 <SearchModal bind:isOpen={searchModalOpen} />
 
-<!-- TOP UTILITY BAR -->
-<div class="bg-emerald-950 text-emerald-100/80 text-xs py-2 px-4 sm:px-8 border-b border-emerald-900/40 hidden md:block">
+<!-- 1. TOP UTILITY STRIP -->
+<div class="bg-[#090D16] text-slate-300 text-xs py-2 px-4 sm:px-8 border-b border-slate-800/80 hidden md:block">
   <div class="max-w-7xl mx-auto flex items-center justify-between">
     <div class="flex items-center gap-6">
-      <div class="flex items-center gap-1.5 hover:text-emerald-300 transition">
-        <MapPin class="w-3.5 h-3.5 text-amber-400" />
+      <div class="flex items-center gap-2 text-slate-400 hover:text-white transition">
+        <MapPin class="w-3.5 h-3.5 text-teal-400" />
         <span>Cintamulya, Candipuro, Lampung Selatan</span>
       </div>
-      <div class="flex items-center gap-1.5 hover:text-emerald-300 transition">
-        <Mail class="w-3.5 h-3.5 text-amber-400" />
+      <div class="flex items-center gap-2 text-slate-400 hover:text-white transition">
+        <Mail class="w-3.5 h-3.5 text-teal-400" />
         <span>sekretariat@alhamid.sch.id</span>
       </div>
-      <div class="flex items-center gap-1.5 hover:text-emerald-300 transition">
-        <Phone class="w-3.5 h-3.5 text-amber-400" />
+      <div class="flex items-center gap-2 text-slate-400 hover:text-white transition">
+        <Phone class="w-3.5 h-3.5 text-teal-400" />
         <span>+62 812-3456-7890</span>
       </div>
     </div>
     <div class="flex items-center gap-4">
-      <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-800/80 text-amber-300 font-semibold text-[11px] border border-emerald-700">
-        <Sparkles class="w-3 h-3 text-amber-400" /> PSB 2026/2027 Dibuka
-      </span>
-      <a href="/admin/login" class="text-emerald-200/70 hover:text-white transition font-medium">
+      <div class="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-300 text-[11px] font-semibold">
+        <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse"></span>
+        <span>PSB 2026/2027 Telah Dibuka</span>
+      </div>
+      <a
+        href="/admin/login"
+        class="text-slate-400 hover:text-white transition font-medium text-[11px] px-2 py-0.5 rounded hover:bg-slate-800"
+      >
         Portal Admin
       </a>
     </div>
   </div>
 </div>
 
-<!-- MAIN NAVBAR -->
+<!-- 2. MAIN FLOATING/STICKY HEADER -->
 <header
   class="sticky top-0 z-40 transition-all duration-300 {isScrolled
-    ? 'bg-white/95 backdrop-blur-md shadow-md py-3 border-b border-slate-100'
-    : 'bg-white py-4 border-b border-slate-100'}"
+    ? 'bg-white/95 backdrop-blur-xl shadow-[0_4px_25px_-5px_rgba(0,0,0,0.07)] py-3 border-b border-slate-200/80'
+    : 'bg-white/90 backdrop-blur-md py-4 border-b border-slate-200/60'}"
 >
   <div class="max-w-7xl mx-auto px-4 sm:px-8 flex items-center justify-between">
-    <!-- BRAND / LOGO -->
+    <!-- BRAND LOGO -->
     <a href="/" class="flex items-center gap-3 group" onclick={closeAll}>
-      <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-emerald-900 via-emerald-800 to-emerald-600 flex items-center justify-center text-amber-300 shadow-md shadow-emerald-950/10 group-hover:scale-105 transition duration-200">
-        <span class="font-serif-luxury font-bold text-2xl tracking-tighter">AH</span>
+      <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-950 border border-slate-800 text-teal-400 flex items-center justify-center font-display font-black text-xl shadow-md group-hover:scale-105 group-hover:border-teal-500/50 group-hover:shadow-teal-950/20 transition duration-200">
+        AH
       </div>
       <div>
-        <div class="font-serif-luxury font-bold text-lg sm:text-xl text-slate-900 leading-tight tracking-tight group-hover:text-emerald-800 transition">
-          Pesantren Al-Hamid
+        <div class="font-display font-extrabold text-lg sm:text-xl text-slate-950 tracking-tight leading-none group-hover:text-teal-600 transition">
+          AL-HAMID
         </div>
-        <div class="text-[11px] font-medium tracking-wider text-slate-500 uppercase">
-          Cintamulya &bull; Lampung
+        <div class="text-[10px] font-bold tracking-widest text-slate-400 uppercase mt-1">
+          Pesantren & Academy &bull; Cintamulya
         </div>
       </div>
     </a>
 
-    <!-- DESKTOP NAVIGATION LINKS -->
+    <!-- DESKTOP NAVIGATION -->
     <nav class="hidden lg:flex items-center gap-1 xl:gap-2">
       <!-- BERANDA -->
       <a
         href="/"
-        class="px-3.5 py-2 rounded-lg text-sm font-semibold transition {page.url.pathname === '/'
-          ? 'text-emerald-700 bg-emerald-50/80'
-          : 'text-slate-700 hover:text-emerald-700 hover:bg-slate-50'}"
+        class="px-3.5 py-2 rounded-full font-display text-sm font-semibold transition {page.url.pathname === '/'
+          ? 'text-teal-800 bg-teal-50 font-bold'
+          : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100/80'}"
       >
         Beranda
       </a>
@@ -110,43 +122,84 @@
         class="relative"
         onmouseenter={() => (tentangOpen = true)}
         onmouseleave={() => (tentangOpen = false)}
+        role="region"
+        aria-label="Menu Tentang"
       >
         <button
-          class="px-3.5 py-2 rounded-lg text-sm font-semibold flex items-center gap-1 transition {page.url.pathname.startsWith('/tentang')
-            ? 'text-emerald-700 bg-emerald-50/80'
-            : 'text-slate-700 hover:text-emerald-700 hover:bg-slate-50'}"
+          class="px-3.5 py-2 rounded-full font-display text-sm font-semibold flex items-center gap-1.5 transition {page.url.pathname.startsWith('/tentang')
+            ? 'text-teal-800 bg-teal-50 font-bold'
+            : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100/80'}"
           aria-expanded={tentangOpen}
         >
           <span>Tentang</span>
-          <ChevronDown class="w-4 h-4 transition-transform duration-200 {tentangOpen ? 'rotate-180' : ''}" />
+          <ChevronDown class="w-3.5 h-3.5 transition-transform duration-200 {tentangOpen ? 'rotate-180 text-teal-600' : 'text-slate-400'}" />
         </button>
 
         {#if tentangOpen}
-          <div class="absolute left-0 top-full pt-2 w-64 animate-in fade-in slide-in-from-top-2 duration-150">
-            <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-2 space-y-1">
-              <a href="/tentang/profil" class="block px-3 py-2 rounded-xl text-sm font-medium text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/70 transition">
-                Profil & Sejarah
+          <div class="absolute left-0 top-full pt-2 w-80 animate-in fade-in slide-in-from-top-2 duration-150">
+            <div class="bg-white rounded-2xl shadow-2xl shadow-slate-950/10 border border-slate-200/80 p-2.5 grid grid-cols-1 gap-1">
+              <a href="/tentang/profil" class="flex items-center gap-3 p-2.5 rounded-xl text-sm font-medium text-slate-700 hover:text-teal-800 hover:bg-teal-50/70 transition group">
+                <div class="w-8 h-8 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center shrink-0 group-hover:bg-teal-600 group-hover:text-white transition">
+                  <Shield class="w-4 h-4" />
+                </div>
+                <div>
+                  <div class="font-bold text-xs text-slate-900 group-hover:text-teal-800">Profil & Sejarah</div>
+                  <div class="text-[11px] text-slate-500">Akar tradisi dan komitmen peradaban</div>
+                </div>
               </a>
-              <a href="/tentang/visi-misi" class="block px-3 py-2 rounded-xl text-sm font-medium text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/70 transition">
-                Visi & Misi
+              <a href="/tentang/visi-misi" class="flex items-center gap-3 p-2.5 rounded-xl text-sm font-medium text-slate-700 hover:text-teal-800 hover:bg-teal-50/70 transition group">
+                <div class="w-8 h-8 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center shrink-0 group-hover:bg-teal-600 group-hover:text-white transition">
+                  <Compass class="w-4 h-4" />
+                </div>
+                <div>
+                  <div class="font-bold text-xs text-slate-900 group-hover:text-teal-800">Visi & Misi</div>
+                  <div class="text-[11px] text-slate-500">Arah strategis dan nilai fundamental</div>
+                </div>
               </a>
-              <a href="/tentang/dewan-pengasuh" class="block px-3 py-2 rounded-xl text-sm font-medium text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/70 transition">
-                Dewan Pengasuh
+              <a href="/tentang/dewan-pengasuh" class="flex items-center gap-3 p-2.5 rounded-xl text-sm font-medium text-slate-700 hover:text-teal-800 hover:bg-teal-50/70 transition group">
+                <div class="w-8 h-8 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center shrink-0 group-hover:bg-teal-600 group-hover:text-white transition">
+                  <Users class="w-4 h-4" />
+                </div>
+                <div>
+                  <div class="font-bold text-xs text-slate-900 group-hover:text-teal-800">Dewan Pengasuh</div>
+                  <div class="text-[11px] text-slate-500">Masyayikh dan dewan pembina santri</div>
+                </div>
               </a>
-              <a href="/tentang/fasilitas" class="block px-3 py-2 rounded-xl text-sm font-medium text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/70 transition">
-                Fasilitas Pesantren
+              <a href="/tentang/fasilitas" class="flex items-center gap-3 p-2.5 rounded-xl text-sm font-medium text-slate-700 hover:text-teal-800 hover:bg-teal-50/70 transition group">
+                <div class="w-8 h-8 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center shrink-0 group-hover:bg-teal-600 group-hover:text-white transition">
+                  <Building2 class="w-4 h-4" />
+                </div>
+                <div>
+                  <div class="font-bold text-xs text-slate-900 group-hover:text-teal-800">Fasilitas Pesantren</div>
+                  <div class="text-[11px] text-slate-500">Sarana asrama, lab modern, masjid</div>
+                </div>
               </a>
-              <a href="/tentang/prestasi" class="block px-3 py-2 rounded-xl text-sm font-medium text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/70 transition">
-                Prestasi Santri
+              <a href="/tentang/prestasi" class="flex items-center gap-3 p-2.5 rounded-xl text-sm font-medium text-slate-700 hover:text-teal-800 hover:bg-teal-50/70 transition group">
+                <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 group-hover:bg-amber-500 group-hover:text-white transition">
+                  <Trophy class="w-4 h-4" />
+                </div>
+                <div>
+                  <div class="font-bold text-xs text-slate-900 group-hover:text-teal-800">Prestasi Santri</div>
+                  <div class="text-[11px] text-slate-500">Jejak juara MQK, Sains & Pidato</div>
+                </div>
               </a>
-              <a href="/tentang/testimoni" class="block px-3 py-2 rounded-xl text-sm font-medium text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/70 transition">
-                Testimoni
+              <a href="/tentang/testimoni" class="flex items-center gap-3 p-2.5 rounded-xl text-sm font-medium text-slate-700 hover:text-teal-800 hover:bg-teal-50/70 transition group">
+                <div class="w-8 h-8 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center shrink-0 group-hover:bg-teal-600 group-hover:text-white transition">
+                  <Heart class="w-4 h-4" />
+                </div>
+                <div>
+                  <div class="font-bold text-xs text-slate-900 group-hover:text-teal-800">Testimoni</div>
+                  <div class="text-[11px] text-slate-500">Ulasan alumni dan wali santri</div>
+                </div>
               </a>
-              <a href="/tentang/alumni" class="block px-3 py-2 rounded-xl text-sm font-medium text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/70 transition">
-                Ikatan Alumni
-              </a>
-              <a href="/kontak" class="block px-3 py-2 rounded-xl text-sm font-medium text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/70 transition">
-                Kontak & Sosmed
+              <a href="/tentang/alumni" class="flex items-center gap-3 p-2.5 rounded-xl text-sm font-medium text-slate-700 hover:text-teal-800 hover:bg-teal-50/70 transition group">
+                <div class="w-8 h-8 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center shrink-0 group-hover:bg-teal-600 group-hover:text-white transition">
+                  <Users class="w-4 h-4" />
+                </div>
+                <div>
+                  <div class="font-bold text-xs text-slate-900 group-hover:text-teal-800">Ikatan Alumni (IKA)</div>
+                  <div class="text-[11px] text-slate-500">Jejaring santri di penjuru nusantara</div>
+                </div>
               </a>
             </div>
           </div>
@@ -158,87 +211,100 @@
         class="relative"
         onmouseenter={() => (pendidikanOpen = true)}
         onmouseleave={() => (pendidikanOpen = false)}
+        role="region"
+        aria-label="Menu Pendidikan"
       >
         <button
-          class="px-3.5 py-2 rounded-lg text-sm font-semibold flex items-center gap-1 transition {page.url.pathname.startsWith('/pendidikan')
-            ? 'text-emerald-700 bg-emerald-50/80'
-            : 'text-slate-700 hover:text-emerald-700 hover:bg-slate-50'}"
+          class="px-3.5 py-2 rounded-full font-display text-sm font-semibold flex items-center gap-1.5 transition {page.url.pathname.startsWith('/pendidikan')
+            ? 'text-teal-800 bg-teal-50 font-bold'
+            : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100/80'}"
           aria-expanded={pendidikanOpen}
         >
           <span>Pendidikan</span>
-          <ChevronDown class="w-4 h-4 transition-transform duration-200 {pendidikanOpen ? 'rotate-180' : ''}" />
+          <ChevronDown class="w-3.5 h-3.5 transition-transform duration-200 {pendidikanOpen ? 'rotate-180 text-teal-600' : 'text-slate-400'}" />
         </button>
 
         {#if pendidikanOpen}
-          <div class="absolute -left-20 top-full pt-2 w-[520px] animate-in fade-in slide-in-from-top-2 duration-150">
-            <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-4 grid grid-cols-2 gap-4">
+          <div class="absolute -left-24 top-full pt-2 w-[560px] animate-in fade-in slide-in-from-top-2 duration-150">
+            <div class="bg-white rounded-2xl shadow-2xl shadow-slate-950/10 border border-slate-200/80 p-5 grid grid-cols-2 gap-5">
               <!-- Non-Formal -->
-              <div class="space-y-2">
-                <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-800 pb-1 border-b border-emerald-100 flex items-center gap-1.5">
-                  <BookOpen class="w-3.5 h-3.5" /> Pendidikan Non-Formal
+              <div class="space-y-3">
+                <div class="text-[11px] font-black uppercase tracking-wider text-teal-800 pb-2 border-b border-slate-100 flex items-center gap-2">
+                  <BookOpen class="w-3.5 h-3.5 text-teal-600" />
+                  <span>Pendidikan Non-Formal</span>
                 </div>
-                <a
-                  href="/pendidikan/madrasah-diniyah-alhamid"
-                  class="block p-2.5 rounded-xl hover:bg-emerald-50/70 group transition"
-                >
-                  <div class="font-semibold text-sm text-slate-800 group-hover:text-emerald-700 transition">
-                    Madrasah Diniyah Al-Hamid
-                  </div>
-                  <div class="text-xs text-slate-500 mt-0.5 line-clamp-1">
-                    Kajian kitab kuning berjenjang (Ula, Wustha, Ulya)
-                  </div>
-                </a>
-                <a
-                  href="/pendidikan/pmq-alhamid"
-                  class="block p-2.5 rounded-xl hover:bg-emerald-50/70 group transition"
-                >
-                  <div class="font-semibold text-sm text-slate-800 group-hover:text-emerald-700 transition">
-                    PMQ Al-Hamid
-                  </div>
-                  <div class="text-xs text-slate-500 mt-0.5 line-clamp-1">
-                    Pendidikan Murottilil Qur'an & Talaqqi Sanad
-                  </div>
-                </a>
+                <div class="space-y-2">
+                  <a
+                    href="/pendidikan/madrasah-diniyah-alhamid"
+                    class="block p-3 rounded-xl hover:bg-teal-50/70 border border-transparent hover:border-teal-100 group transition"
+                  >
+                    <div class="flex items-center justify-between">
+                      <span class="font-bold text-xs text-slate-900 group-hover:text-teal-800">Madrasah Diniyah</span>
+                      <span class="text-[10px] font-bold text-teal-700 bg-teal-100/70 px-2 py-0.5 rounded-full">Turats</span>
+                    </div>
+                    <div class="text-[11px] text-slate-500 mt-1 line-clamp-1">
+                      Kajian kitab kuning berjenjang (Ula, Wustha, Ulya)
+                    </div>
+                  </a>
+                  <a
+                    href="/pendidikan/pmq-alhamid"
+                    class="block p-3 rounded-xl hover:bg-teal-50/70 border border-transparent hover:border-teal-100 group transition"
+                  >
+                    <div class="flex items-center justify-between">
+                      <span class="font-bold text-xs text-slate-900 group-hover:text-teal-800">PMQ Al-Hamid</span>
+                      <span class="text-[10px] font-bold text-amber-700 bg-amber-100/70 px-2 py-0.5 rounded-full">Talaqqi</span>
+                    </div>
+                    <div class="text-[11px] text-slate-500 mt-1 line-clamp-1">
+                      Pendidikan Murottilil Qur'an & Sanad Qira'ah
+                    </div>
+                  </a>
+                </div>
               </div>
 
               <!-- Formal -->
-              <div class="space-y-2">
-                <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-800 pb-1 border-b border-emerald-100 flex items-center gap-1.5">
-                  <GraduationCap class="w-3.5 h-3.5" /> Pendidikan Formal
+              <div class="space-y-3">
+                <div class="text-[11px] font-black uppercase tracking-wider text-indigo-800 pb-2 border-b border-slate-100 flex items-center gap-2">
+                  <GraduationCap class="w-3.5 h-3.5 text-indigo-600" />
+                  <span>Pendidikan Formal</span>
                 </div>
-                <a
-                  href="/pendidikan/mts-cintamulya"
-                  class="block p-2.5 rounded-xl hover:bg-emerald-50/70 group transition"
-                >
-                  <div class="font-semibold text-sm text-slate-800 group-hover:text-emerald-700 transition">
-                    MTs Cintamulya
-                  </div>
-                  <div class="text-xs text-slate-500 mt-0.5 line-clamp-1">
-                    Akreditasi A &bull; Berbasis Sains & Karakter
-                  </div>
-                </a>
-                <a
-                  href="/pendidikan/ma-cintamulya"
-                  class="block p-2.5 rounded-xl hover:bg-emerald-50/70 group transition"
-                >
-                  <div class="font-semibold text-sm text-slate-800 group-hover:text-emerald-700 transition">
-                    MA Cintamulya
-                  </div>
-                  <div class="text-xs text-slate-500 mt-0.5 line-clamp-1">
-                    MIPA, IPS & Keagamaan &bull; Jalur PTN & LN
-                  </div>
-                </a>
-                <a
-                  href="/pendidikan/mai-cintamulya"
-                  class="block p-2.5 rounded-xl hover:bg-emerald-50/70 group transition"
-                >
-                  <div class="font-semibold text-sm text-slate-800 group-hover:text-emerald-700 transition">
-                    MAI Cintamulya
-                  </div>
-                  <div class="text-xs text-slate-500 mt-0.5 line-clamp-1">
-                    Madrasah Aliyah Kejuruan IT & Dakwah Digital
-                  </div>
-                </a>
+                <div class="space-y-2">
+                  <a
+                    href="/pendidikan/mts-cintamulya"
+                    class="block p-3 rounded-xl hover:bg-indigo-50/70 border border-transparent hover:border-indigo-100 group transition"
+                  >
+                    <div class="flex items-center justify-between">
+                      <span class="font-bold text-xs text-slate-900 group-hover:text-indigo-800">MTs Cintamulya</span>
+                      <span class="text-[10px] font-bold text-indigo-700 bg-indigo-100/70 px-2 py-0.5 rounded-full">Akreditasi A</span>
+                    </div>
+                    <div class="text-[11px] text-slate-500 mt-1 line-clamp-1">
+                      Kombinasi kurikulum nasional & pembiasaan adab
+                    </div>
+                  </a>
+                  <a
+                    href="/pendidikan/ma-cintamulya"
+                    class="block p-3 rounded-xl hover:bg-indigo-50/70 border border-transparent hover:border-indigo-100 group transition"
+                  >
+                    <div class="flex items-center justify-between">
+                      <span class="font-bold text-xs text-slate-900 group-hover:text-indigo-800">MA Cintamulya</span>
+                      <span class="text-[10px] font-bold text-indigo-700 bg-indigo-100/70 px-2 py-0.5 rounded-full">MIPA & IPS</span>
+                    </div>
+                    <div class="text-[11px] text-slate-500 mt-1 line-clamp-1">
+                      Fokus tembus PTN favorit & beasiswa luar negeri
+                    </div>
+                  </a>
+                  <a
+                    href="/pendidikan/mai-cintamulya"
+                    class="block p-3 rounded-xl hover:bg-indigo-50/70 border border-transparent hover:border-indigo-100 group transition"
+                  >
+                    <div class="flex items-center justify-between">
+                      <span class="font-bold text-xs text-slate-900 group-hover:text-indigo-800">MAI Cintamulya</span>
+                      <span class="text-[10px] font-bold text-teal-700 bg-teal-100/70 px-2 py-0.5 rounded-full">Kejuruan IT</span>
+                    </div>
+                    <div class="text-[11px] text-slate-500 mt-1 line-clamp-1">
+                      Rekayasa perangkat lunak & dakwah digital
+                    </div>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -248,11 +314,11 @@
       <!-- BERITA / ARTIKEL -->
       <a
         href="/berita"
-        class="px-3.5 py-2 rounded-lg text-sm font-semibold transition {page.url.pathname.startsWith('/berita')
-          ? 'text-emerald-700 bg-emerald-50/80'
-          : 'text-slate-700 hover:text-emerald-700 hover:bg-slate-50'}"
+        class="px-3.5 py-2 rounded-full font-display text-sm font-semibold transition {page.url.pathname.startsWith('/berita')
+          ? 'text-teal-800 bg-teal-50 font-bold'
+          : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100/80'}"
       >
-        Berita & Artikel
+        Berita
       </a>
 
       <!-- GALERI (DROPDOWN) -->
@@ -260,25 +326,29 @@
         class="relative"
         onmouseenter={() => (galeriOpen = true)}
         onmouseleave={() => (galeriOpen = false)}
+        role="region"
+        aria-label="Menu Galeri"
       >
         <button
-          class="px-3.5 py-2 rounded-lg text-sm font-semibold flex items-center gap-1 transition {page.url.pathname.startsWith('/galeri')
-            ? 'text-emerald-700 bg-emerald-50/80'
-            : 'text-slate-700 hover:text-emerald-700 hover:bg-slate-50'}"
+          class="px-3.5 py-2 rounded-full font-display text-sm font-semibold flex items-center gap-1.5 transition {page.url.pathname.startsWith('/galeri')
+            ? 'text-teal-800 bg-teal-50 font-bold'
+            : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100/80'}"
           aria-expanded={galeriOpen}
         >
           <span>Galeri</span>
-          <ChevronDown class="w-4 h-4 transition-transform duration-200 {galeriOpen ? 'rotate-180' : ''}" />
+          <ChevronDown class="w-3.5 h-3.5 transition-transform duration-200 {galeriOpen ? 'rotate-180 text-teal-600' : 'text-slate-400'}" />
         </button>
 
         {#if galeriOpen}
-          <div class="absolute left-0 top-full pt-2 w-48 animate-in fade-in slide-in-from-top-2 duration-150">
-            <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-2 space-y-1">
-              <a href="/galeri/foto" class="block px-3 py-2 rounded-xl text-sm font-medium text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/70 transition">
-                Galeri Foto
+          <div class="absolute left-0 top-full pt-2 w-56 animate-in fade-in slide-in-from-top-2 duration-150">
+            <div class="bg-white rounded-2xl shadow-2xl shadow-slate-950/10 border border-slate-200/80 p-2 space-y-1">
+              <a href="/galeri/foto" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:text-teal-800 hover:bg-teal-50/70 transition">
+                <Image class="w-4 h-4 text-teal-600" />
+                <span>Dokumentasi Foto</span>
               </a>
-              <a href="/galeri/video" class="block px-3 py-2 rounded-xl text-sm font-medium text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/70 transition">
-                Galeri Video YouTube
+              <a href="/galeri/video" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:text-teal-800 hover:bg-teal-50/70 transition">
+                <Video class="w-4 h-4 text-rose-500" />
+                <span>Video Dokumentasi</span>
               </a>
             </div>
           </div>
@@ -288,39 +358,40 @@
       <!-- KONTAK -->
       <a
         href="/kontak"
-        class="px-3.5 py-2 rounded-lg text-sm font-semibold transition {page.url.pathname === '/kontak'
-          ? 'text-emerald-700 bg-emerald-50/80'
-          : 'text-slate-700 hover:text-emerald-700 hover:bg-slate-50'}"
+        class="px-3.5 py-2 rounded-full font-display text-sm font-semibold transition {page.url.pathname === '/kontak'
+          ? 'text-teal-800 bg-teal-50 font-bold'
+          : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100/80'}"
       >
         Kontak
       </a>
     </nav>
 
     <!-- RIGHT ACTION BUTTONS -->
-    <div class="flex items-center gap-2.5">
-      <!-- Search Trigger -->
+    <div class="flex items-center gap-3">
+      <!-- Search Trigger Command Pill -->
       <button
         onclick={() => (searchModalOpen = true)}
-        class="p-2.5 rounded-xl text-slate-500 hover:text-emerald-700 hover:bg-emerald-50 transition border border-transparent hover:border-emerald-100"
-        aria-label="Buka pencarian (Ctrl+K)"
-        title="Pencarian Cepat (Ctrl+K)"
+        class="flex items-center gap-2.5 px-3.5 py-2 rounded-full bg-slate-100 hover:bg-slate-200/80 text-slate-500 hover:text-slate-900 text-xs font-semibold border border-slate-200/70 transition"
+        aria-label="Pencarian Cepat"
       >
-        <Search class="w-5 h-5" />
+        <Search class="w-4 h-4 text-slate-500" />
+        <span class="hidden sm:inline">Pencarian</span>
+        <kbd class="hidden md:inline-block px-1.5 py-0.5 text-[10px] bg-white border border-slate-200 rounded font-mono text-slate-400 shadow-2xs">Ctrl K</kbd>
       </button>
 
       <!-- CTA Button PSB -->
       <a
         href="/kontak"
-        class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-800 to-emerald-700 hover:from-emerald-700 hover:to-emerald-600 text-white font-semibold text-sm shadow-md shadow-emerald-950/15 hover:shadow-lg transition duration-200"
+        class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 hover:from-teal-600 hover:to-emerald-500 text-white font-display font-bold text-xs tracking-wide uppercase shadow-md shadow-teal-950/15 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition duration-200"
       >
         <span>Pendaftaran PSB</span>
-        <ArrowRight class="w-4 h-4" />
+        <ArrowRight class="w-3.5 h-3.5" />
       </a>
 
       <!-- Mobile Hamburger Toggle -->
       <button
         onclick={() => (mobileMenuOpen = !mobileMenuOpen)}
-        class="lg:hidden p-2.5 rounded-xl text-slate-700 hover:bg-slate-100 transition"
+        class="lg:hidden p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition"
         aria-label="Menu"
       >
         {#if mobileMenuOpen}
@@ -334,70 +405,70 @@
 
   <!-- MOBILE NAVIGATION DRAWER -->
   {#if mobileMenuOpen}
-    <div class="lg:hidden bg-white border-t border-slate-100 px-4 py-6 space-y-4 max-h-[85vh] overflow-y-auto animate-in slide-in-from-top duration-200 shadow-xl">
-      <a href="/" onclick={closeAll} class="block px-3 py-2 rounded-lg text-base font-semibold text-slate-800 hover:bg-emerald-50">
+    <div class="lg:hidden bg-white border-t border-slate-200/80 px-4 py-6 space-y-4 max-h-[85vh] overflow-y-auto animate-in slide-in-from-top duration-200 shadow-2xl">
+      <a href="/" onclick={closeAll} class="block px-3 py-2.5 rounded-xl font-display font-bold text-slate-900 hover:bg-slate-50">
         Beranda
       </a>
 
       <!-- Tentang Mobile -->
       <div class="space-y-1">
-        <div class="px-3 text-xs font-bold uppercase tracking-wider text-emerald-800">Tentang Kami</div>
+        <div class="px-3 text-xs font-black uppercase tracking-wider text-teal-800">Tentang Kami</div>
         <div class="grid grid-cols-2 gap-1 pl-2">
-          <a href="/tentang/profil" onclick={closeAll} class="px-3 py-1.5 text-sm text-slate-600 hover:text-emerald-700">Profil & Sejarah</a>
-          <a href="/tentang/visi-misi" onclick={closeAll} class="px-3 py-1.5 text-sm text-slate-600 hover:text-emerald-700">Visi & Misi</a>
-          <a href="/tentang/dewan-pengasuh" onclick={closeAll} class="px-3 py-1.5 text-sm text-slate-600 hover:text-emerald-700">Dewan Pengasuh</a>
-          <a href="/tentang/fasilitas" onclick={closeAll} class="px-3 py-1.5 text-sm text-slate-600 hover:text-emerald-700">Fasilitas</a>
-          <a href="/tentang/prestasi" onclick={closeAll} class="px-3 py-1.5 text-sm text-slate-600 hover:text-emerald-700">Prestasi</a>
-          <a href="/tentang/testimoni" onclick={closeAll} class="px-3 py-1.5 text-sm text-slate-600 hover:text-emerald-700">Testimoni</a>
-          <a href="/tentang/alumni" onclick={closeAll} class="px-3 py-1.5 text-sm text-slate-600 hover:text-emerald-700">Ikatan Alumni</a>
-          <a href="/kontak" onclick={closeAll} class="px-3 py-1.5 text-sm text-slate-600 hover:text-emerald-700">Kontak & Lokasi</a>
+          <a href="/tentang/profil" onclick={closeAll} class="px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-teal-700">Profil & Sejarah</a>
+          <a href="/tentang/visi-misi" onclick={closeAll} class="px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-teal-700">Visi & Misi</a>
+          <a href="/tentang/dewan-pengasuh" onclick={closeAll} class="px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-teal-700">Dewan Pengasuh</a>
+          <a href="/tentang/fasilitas" onclick={closeAll} class="px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-teal-700">Fasilitas</a>
+          <a href="/tentang/prestasi" onclick={closeAll} class="px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-teal-700">Prestasi</a>
+          <a href="/tentang/testimoni" onclick={closeAll} class="px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-teal-700">Testimoni</a>
+          <a href="/tentang/alumni" onclick={closeAll} class="px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-teal-700">Ikatan Alumni</a>
+          <a href="/kontak" onclick={closeAll} class="px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-teal-700">Kontak & Lokasi</a>
         </div>
       </div>
 
       <!-- Pendidikan Mobile -->
       <div class="space-y-1">
-        <div class="px-3 text-xs font-bold uppercase tracking-wider text-emerald-800">Pendidikan</div>
+        <div class="px-3 text-xs font-black uppercase tracking-wider text-teal-800">Pendidikan</div>
         <div class="space-y-1 pl-2">
-          <a href="/pendidikan/madrasah-diniyah-alhamid" onclick={closeAll} class="block px-3 py-1.5 text-sm font-medium text-slate-700 hover:text-emerald-700">
+          <a href="/pendidikan/madrasah-diniyah-alhamid" onclick={closeAll} class="block px-3 py-2 text-xs font-bold text-slate-800 hover:text-teal-700 hover:bg-slate-50 rounded-lg">
             Madrasah Diniyah Al-Hamid
           </a>
-          <a href="/pendidikan/pmq-alhamid" onclick={closeAll} class="block px-3 py-1.5 text-sm font-medium text-slate-700 hover:text-emerald-700">
+          <a href="/pendidikan/pmq-alhamid" onclick={closeAll} class="block px-3 py-2 text-xs font-bold text-slate-800 hover:text-teal-700 hover:bg-slate-50 rounded-lg">
             PMQ (Pendidikan Murottilil Qur'an)
           </a>
-          <a href="/pendidikan/mts-cintamulya" onclick={closeAll} class="block px-3 py-1.5 text-sm font-medium text-slate-700 hover:text-emerald-700">
+          <a href="/pendidikan/mts-cintamulya" onclick={closeAll} class="block px-3 py-2 text-xs font-bold text-slate-800 hover:text-teal-700 hover:bg-slate-50 rounded-lg">
             MTs Cintamulya
           </a>
-          <a href="/pendidikan/ma-cintamulya" onclick={closeAll} class="block px-3 py-1.5 text-sm font-medium text-slate-700 hover:text-emerald-700">
+          <a href="/pendidikan/ma-cintamulya" onclick={closeAll} class="block px-3 py-2 text-xs font-bold text-slate-800 hover:text-teal-700 hover:bg-slate-50 rounded-lg">
             MA Cintamulya
           </a>
-          <a href="/pendidikan/mai-cintamulya" onclick={closeAll} class="block px-3 py-1.5 text-sm font-medium text-slate-700 hover:text-emerald-700">
-            MAI Cintamulya
+          <a href="/pendidikan/mai-cintamulya" onclick={closeAll} class="block px-3 py-2 text-xs font-bold text-slate-800 hover:text-teal-700 hover:bg-slate-50 rounded-lg">
+            MAI Cintamulya (Kejuruan IT)
           </a>
         </div>
       </div>
 
       <!-- Berita & Galeri Mobile -->
-      <a href="/berita" onclick={closeAll} class="block px-3 py-2 rounded-lg text-base font-semibold text-slate-800 hover:bg-emerald-50">
+      <a href="/berita" onclick={closeAll} class="block px-3 py-2.5 rounded-xl font-display font-bold text-slate-900 hover:bg-slate-50">
         Berita & Artikel
       </a>
       <div class="flex gap-2 pl-3">
-        <a href="/galeri/foto" onclick={closeAll} class="text-sm text-slate-600 hover:text-emerald-700">Galeri Foto</a>
+        <a href="/galeri/foto" onclick={closeAll} class="text-xs font-semibold text-slate-600 hover:text-teal-700">Galeri Foto</a>
         <span class="text-slate-300">&bull;</span>
-        <a href="/galeri/video" onclick={closeAll} class="text-sm text-slate-600 hover:text-emerald-700">Galeri Video</a>
+        <a href="/galeri/video" onclick={closeAll} class="text-xs font-semibold text-slate-600 hover:text-teal-700">Galeri Video</a>
       </div>
 
       <div class="pt-4 border-t border-slate-100 flex flex-col gap-2">
         <a
           href="/kontak"
           onclick={closeAll}
-          class="w-full text-center py-3 rounded-xl bg-emerald-800 text-white font-semibold text-sm shadow-md"
+          class="w-full text-center py-3 rounded-full bg-gradient-to-r from-teal-700 to-emerald-600 text-white font-display font-bold text-xs uppercase tracking-wider shadow-md"
         >
           Pendaftaran Santri Baru (PSB)
         </a>
         <a
           href="/admin/login"
           onclick={closeAll}
-          class="w-full text-center py-2.5 rounded-xl border border-slate-200 text-slate-600 font-medium text-xs hover:bg-slate-50"
+          class="w-full text-center py-2.5 rounded-full border border-slate-200 text-slate-600 font-medium text-xs hover:bg-slate-50"
         >
           Masuk ke Portal Admin
         </a>

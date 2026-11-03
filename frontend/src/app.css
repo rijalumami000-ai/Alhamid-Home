@@ -2,53 +2,112 @@
 
 @layer base {
   :root {
-    --color-primary-50: #ecfdf5;
-    --color-primary-100: #d1fae5;
-    --color-primary-500: #10b981;
-    --color-primary-600: #059669;
-    --color-primary-700: #047857;
-    --color-primary-800: #065f46;
-    --color-primary-900: #064e3b;
-    --color-primary-950: #022c22;
+    --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-editorial: 'Newsreader', Georgia, serif;
 
-    --color-gold-400: #fbbf24;
-    --color-gold-500: #f59e0b;
-    --color-gold-600: #d97706;
+    /* Theme colors */
+    --color-brand-obsidian: #090d16;
+    --color-brand-slate: #0f172a;
+    --color-brand-cyan: #06b6d4;
+    --color-brand-teal: #0d9488;
+    --color-brand-emerald: #10b981;
+    --color-brand-amber: #f59e0b;
   }
 
   html {
     scroll-behavior: smooth;
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    font-family: var(--font-body);
+    color-scheme: light;
   }
 
   body {
-    background-color: #f8fafc;
+    background-color: #fafbfc;
     color: #0f172a;
     overflow-x: hidden;
   }
+
+  h1, h2, h3, h4, .font-heading {
+    font-family: var(--font-display);
+    letter-spacing: -0.025em;
+  }
 }
 
+/* Typography Helpers */
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-sans-modern, .font-body {
+  font-family: var(--font-body);
+}
+
+.font-editorial {
+  font-family: var(--font-editorial);
+}
+
+/* Backward compatibility for existing template references */
 .font-serif-luxury {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-display);
+  letter-spacing: -0.025em;
 }
 
-.font-sans-modern {
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+/* Modern Gradient Text */
+.text-gradient-brand {
+  background: linear-gradient(135deg, #0f172a 0%, #0d9488 60%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-aurora {
+  background: linear-gradient(135deg, #34d399 0%, #06b6d4 50%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* Glassmorphism helpers */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
 .glass-dark {
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 15, 29, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Modern architectural grid background */
+.bg-grid-pattern {
+  background-image: 
+    linear-gradient(to right, rgba(15, 23, 42, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.bg-grid-dark {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+
+/* Ambient glow orb */
+.ambient-glow-teal {
+  background: radial-gradient(circle at 50% 50%, rgba(13, 148, 136, 0.18), transparent 70%);
+}
+
+.ambient-glow-amber {
+  background: radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.15), transparent 70%);
 }
 
 /* Custom scrollbars */
@@ -63,10 +122,9 @@
 
 ::-webkit-scrollbar-thumb {
   background: #cbd5e1;
-  border-radius: 4px;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
-

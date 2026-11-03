@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { api } from '$lib/api';
   import type { Alumni } from '$lib/types';
-  import { Users, MapPin, Briefcase, GraduationCap, ArrowUpRight } from 'lucide-svelte';
+  import { Users, MapPin, Briefcase, GraduationCap, ArrowUpRight, Sparkles } from 'lucide-svelte';
 
   let list = $state<Alumni[]>([]);
 
@@ -19,69 +19,61 @@
   <title>Ikatan Alumni Al-Hamid (IKAH) | Pondok Pesantren Al-Hamid</title>
 </svelte:head>
 
-<div class="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-800 text-white py-16 px-4 sm:px-8">
-  <div class="max-w-6xl mx-auto space-y-4">
-    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-semibold border border-emerald-500/30">
-      Jejaring & Pengabdian
+<!-- Header -->
+<div class="bg-[#090D16] text-white py-20 px-4 sm:px-8 relative overflow-hidden border-b border-slate-800/80">
+  <div class="absolute inset-0 bg-grid-dark opacity-30 pointer-events-none"></div>
+  <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-teal-500/15 blur-3xl pointer-events-none rounded-full"></div>
+
+  <div class="max-w-6xl mx-auto space-y-4 relative z-10">
+    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/15 text-teal-300 text-xs font-bold border border-teal-500/30">
+      <Sparkles class="w-3.5 h-3.5 text-teal-400" />
+      <span>Jejaring & Pengabdian</span>
     </div>
-    <h1 class="font-serif-luxury font-bold text-3xl sm:text-5xl text-white">
+    <h1 class="font-display font-black text-3xl sm:text-5xl lg:text-6xl text-white tracking-tight">
       Ikatan Alumni Pondok Pesantren Al-Hamid
     </h1>
-    <p class="text-emerald-100/80 text-base max-w-2xl">
-      Wadah sinergi ribuan alumni Al-Hamid yang berkiprah di sektor keagamaan, akademisi, sains teknologi, birokrasi, dan wirausaha di berbagai belahan dunia.
+    <p class="text-slate-300 text-base sm:text-lg max-w-2xl font-normal leading-relaxed">
+      Wadah sinergi ribuan alumni Al-Hamid yang berkiprah di sektor keagamaan, akademisi, sains teknologi, birokrasi, dan industri kreatif di berbagai belahan dunia.
     </p>
   </div>
 </div>
 
-<div class="max-w-6xl mx-auto px-4 sm:px-8 py-16">
+<div class="max-w-6xl mx-auto px-4 sm:px-8 py-20">
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
     {#each list as item}
-      <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between space-y-4">
+      <div class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-7 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between space-y-4 group">
         <div class="space-y-4">
           <div class="flex items-center gap-4">
             <img
               src={item.photo_url}
               alt={item.name}
-              class="w-16 h-16 rounded-2xl object-cover border-2 border-emerald-600 shadow-sm"
+              class="w-16 h-16 rounded-2xl object-cover border-2 border-teal-500 shadow-md group-hover:scale-105 transition"
             />
             <div>
-              <h2 class="font-bold text-base text-slate-900">{item.name}</h2>
-              <div class="text-xs text-emerald-700 font-semibold">Angkatan {item.graduation_year}</div>
+              <h2 class="font-display font-bold text-base text-slate-950 group-hover:text-teal-700 transition leading-snug">{item.name}</h2>
+              <div class="text-xs text-teal-700 font-black uppercase tracking-wider mt-0.5">Angkatan {item.graduation_year}</div>
               <div class="text-[11px] text-slate-400">{item.education_unit}</div>
             </div>
           </div>
 
-          <div class="space-y-1.5 text-xs text-slate-600">
+          <div class="space-y-2 text-xs text-slate-600 pt-1">
             <div class="flex items-center gap-2">
-              <Briefcase class="w-3.5 h-3.5 text-slate-400" />
-              <span>{item.profession}</span>
+              <Briefcase class="w-3.5 h-3.5 text-teal-600 shrink-0" />
+              <span class="font-medium text-slate-700">{item.profession}</span>
             </div>
             <div class="flex items-center gap-2">
-              <MapPin class="w-3.5 h-3.5 text-slate-400" />
-              <span>{item.current_location}</span>
+              <MapPin class="w-3.5 h-3.5 text-teal-600 shrink-0" />
+              <span>{item.city}</span>
             </div>
           </div>
 
-          <p class="text-slate-600 text-xs leading-relaxed italic bg-slate-50 p-3 rounded-xl border border-slate-100">
-            "{item.story}"
-          </p>
+          {#if item.testimonial}
+            <p class="font-editorial italic text-xs text-slate-600 pt-2 border-t border-slate-100 leading-relaxed">
+              "{item.testimonial}"
+            </p>
+          {/if}
         </div>
-
-        {#if item.social_link}
-          <div class="pt-3 border-t border-slate-100 flex justify-end">
-            <a
-              href={item.social_link}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 hover:text-emerald-800"
-            >
-              <span>Profil LinkedIn / Medsos</span>
-              <ArrowUpRight class="w-3.5 h-3.5" />
-            </a>
-          </div>
-        {/if}
       </div>
     {/each}
   </div>
 </div>
-
