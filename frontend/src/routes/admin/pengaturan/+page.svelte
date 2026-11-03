@@ -6,7 +6,16 @@
   import { updateLocalSettings } from '$lib/stores/settings';
   import DriveImageInput from '$lib/components/DriveImageInput.svelte';
 
-  let settings = $state<Record<string, string>>({});
+  let settings = $state<Record<string, string>>({
+    site_name: '',
+    site_tagline: '',
+    site_description: '',
+    site_font_preset: 'architectural',
+    header_brand_title: 'AL-HAMID',
+    header_brand_subtitle: 'Pesantren & Academy • Cintamulya',
+    header_brand_initials: 'AH',
+    header_brand_logo_url: ''
+  });
   let loading = $state(true);
   let savedSuccess = $state(false);
 
@@ -18,7 +27,16 @@
   async function loadData() {
     try {
       const list = await api.admin.getSettings();
-      const map: Record<string, string> = {};
+      const map: Record<string, string> = {
+        site_name: '',
+        site_tagline: '',
+        site_description: '',
+        site_font_preset: 'architectural',
+        header_brand_title: 'AL-HAMID',
+        header_brand_subtitle: 'Pesantren & Academy • Cintamulya',
+        header_brand_initials: 'AH',
+        header_brand_logo_url: ''
+      };
       for (const item of list) {
         map[item.key] = item.value;
       }
@@ -79,7 +97,13 @@
     </div>
   {/if}
 
-  <form onsubmit={handleSave} class="space-y-6">
+  {#if loading}
+    <div class="p-12 text-center text-slate-400 bg-white rounded-3xl border border-slate-200 shadow-sm">
+      <div class="animate-spin w-8 h-8 border-4 border-teal-500 border-t-transparent rounded-full mx-auto mb-3"></div>
+      <p class="text-xs font-semibold">Memuat pengaturan website & tipografi...</p>
+    </div>
+  {:else}
+    <form onsubmit={handleSave} class="space-y-6">
     <!-- SECTION 1: HEADER BRAND IDENTITY (REQUEST #6) -->
     <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-5">
       <div class="text-xs font-bold uppercase tracking-wider text-teal-800 flex items-center gap-1.5 pb-2 border-b border-slate-100">
@@ -269,4 +293,5 @@
       </button>
     </div>
   </form>
+  {/if}
 </div>

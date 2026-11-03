@@ -3,7 +3,7 @@
   import { Image, CheckCircle2, AlertCircle, ExternalLink } from 'lucide-svelte';
 
   interface Props {
-    value: string;
+    value?: string;
     label?: string;
     id?: string;
     placeholder?: string;
@@ -21,18 +21,28 @@
   }: Props = $props();
 
   let imgError = $state(false);
-  let isDrive = $derived(isGoogleDriveUrl(value) || value.includes('googleusercontent.com/d/'));
+
+  // Safe check for Google Drive links (protects against undefined / null / empty)
+  let isDrive = $derived.by(() => {
+    if (!value || typeof value !== 'string') return false;
+    return isGoogleDriveUrl(value) || value.includes('googleusercontent.com/d/');
+  });
+
+  // Safe check for non-empty string
+  let hasValidValue = $derived.by(() => {
+    return Boolean(value && typeof value === 'string' && value.trim().length > 0);
+  });
 
   function handleInput(e: Event) {
     const input = e.target as HTMLInputElement;
-    const raw = input.value;
+    const raw = input.value || '';
     const normalized = normalizeGoogleDriveUrl(raw);
     value = normalized;
     imgError = false;
   }
 
   function handleBlur() {
-    if (value) {
+    if (value && typeof value === 'string') {
       value = normalizeGoogleDriveUrl(value);
     }
   }
@@ -58,7 +68,7 @@
       {id}
       type="url"
       {required}
-      value={value}
+      value={value || ''}
       oninput={handleInput}
       onblur={handleBlur}
       {placeholder}
@@ -71,7 +81,7 @@
   </p>
 
   <!-- Live Image Preview Card -->
-  {#if value && value.trim().length > 0}
+  {#if hasValidValue}
     <div class="mt-2.5 p-3 rounded-2xl bg-slate-50 border border-slate-200/90 flex flex-col sm:flex-row items-start sm:items-center gap-3">
       <div class="w-20 h-20 rounded-xl bg-slate-200 overflow-hidden shrink-0 border border-slate-300 relative group">
         {#if !imgError}
@@ -127,4 +137,3 @@
     </div>
   {/if}
 </div>
-

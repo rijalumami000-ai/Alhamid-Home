@@ -4,14 +4,38 @@
   import { MapPin, Phone, Mail, Share2, Save, CheckCircle2, ExternalLink, Globe } from 'lucide-svelte';
   import { updateLocalSettings } from '$lib/stores/settings';
 
-  let settings = $state<Record<string, string>>({});
+  let settings = $state<Record<string, string>>({
+    site_address: '',
+    site_phone: '',
+    site_whatsapp: '',
+    site_email: '',
+    site_office_hours: '',
+    site_maps: '',
+    site_maps_embed: '',
+    social_facebook: '',
+    social_instagram: '',
+    social_youtube: '',
+    social_tiktok: ''
+  });
   let loading = $state(true);
   let savedSuccess = $state(false);
 
   async function loadData() {
     try {
       const list = await api.admin.getSettings();
-      const map: Record<string, string> = {};
+      const map: Record<string, string> = {
+        site_address: '',
+        site_phone: '',
+        site_whatsapp: '',
+        site_email: '',
+        site_office_hours: '',
+        site_maps: '',
+        site_maps_embed: '',
+        social_facebook: '',
+        social_instagram: '',
+        social_youtube: '',
+        social_tiktok: ''
+      };
       for (const item of list) {
         map[item.key] = item.value;
       }
@@ -72,7 +96,13 @@
     </div>
   {/if}
 
-  <form onsubmit={handleSave} class="space-y-6">
+  {#if loading}
+    <div class="p-12 text-center text-slate-400 bg-white rounded-3xl border border-slate-200 shadow-sm">
+      <div class="animate-spin w-8 h-8 border-4 border-teal-500 border-t-transparent rounded-full mx-auto mb-3"></div>
+      <p class="text-xs font-semibold">Memuat data kontak & media sosial...</p>
+    </div>
+  {:else}
+    <form onsubmit={handleSave} class="space-y-6">
     <!-- SECTION 1: LOKASI & GOOGLE MAPS -->
     <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
       <div class="text-xs font-bold uppercase tracking-wider text-teal-800 flex items-center gap-1.5 pb-2 border-b border-slate-100">
@@ -228,4 +258,6 @@
       </button>
     </div>
   </form>
+  {/if}
 </div>
+
